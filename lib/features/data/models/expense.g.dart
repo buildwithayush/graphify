@@ -80,12 +80,7 @@ int _expenseEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.category;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.category.length * 3;
   return bytesCount;
 }
 
@@ -108,7 +103,7 @@ Expense _expenseDeserialize(
 ) {
   final object = Expense(
     amount: reader.readDoubleOrNull(offsets[0]),
-    category: reader.readStringOrNull(offsets[1]),
+    category: reader.readStringOrNull(offsets[1]) ?? '',
     date: reader.readDateTimeOrNull(offsets[2]),
   );
   object.id = id;
@@ -125,7 +120,7 @@ P _expenseDeserializeProp<P>(
     case 0:
       return (reader.readDoubleOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 2:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
@@ -345,28 +340,8 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterWhereClause> categoryIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'category',
-        value: [null],
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterWhereClause> categoryIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'category',
-        lower: [null],
-        includeLower: false,
-        upper: [],
-      ));
-    });
-  }
-
   QueryBuilder<Expense, Expense, QAfterWhereClause> categoryEqualTo(
-      String? category) {
+      String category) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'category',
@@ -376,7 +351,7 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
   }
 
   QueryBuilder<Expense, Expense, QAfterWhereClause> categoryNotEqualTo(
-      String? category) {
+      String category) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -411,7 +386,7 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
   }
 
   QueryBuilder<Expense, Expense, QAfterWhereClause> categoryGreaterThan(
-    String? category, {
+    String category, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -425,7 +400,7 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
   }
 
   QueryBuilder<Expense, Expense, QAfterWhereClause> categoryLessThan(
-    String? category, {
+    String category, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -439,8 +414,8 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
   }
 
   QueryBuilder<Expense, Expense, QAfterWhereClause> categoryBetween(
-    String? lowerCategory,
-    String? upperCategory, {
+    String lowerCategory,
+    String upperCategory, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -582,24 +557,8 @@ extension ExpenseQueryFilter
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'category',
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'category',
-      ));
-    });
-  }
-
   QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -612,7 +571,7 @@ extension ExpenseQueryFilter
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -627,7 +586,7 @@ extension ExpenseQueryFilter
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -642,8 +601,8 @@ extension ExpenseQueryFilter
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -981,7 +940,7 @@ extension ExpenseQueryProperty
     });
   }
 
-  QueryBuilder<Expense, String?, QQueryOperations> categoryProperty() {
+  QueryBuilder<Expense, String, QQueryOperations> categoryProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'category');
     });

@@ -13,8 +13,8 @@ class Expense {
 
   
   @Index(type: IndexType.value)
-  String? category;
+  String category = '';
 
   
-  Expense({this.date, this.amount, this.category});
+  Expense({this.date, this.amount,  this.category = ''});
 }
