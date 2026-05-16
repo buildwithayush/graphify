@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'expenses.g.dart';
 @riverpod
 Future<List<Expense>> expenses(ExpensesRef ref) async {
-  final repo = ref.watch(expenseRepositoryProvider);
+  final repo = await ref.watch(expenseRepositoryProvider.future);
 
   return repo.getAllExpenses();
 }
