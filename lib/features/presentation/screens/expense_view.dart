@@ -16,9 +16,10 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
     final expensesAsync = ref.watch(expensesProvider);
 
     return Scaffold(
+      appBar: AppBar(title: const Text('Expenses')),
       body: expensesAsync.when(
         data: (expenses) {
-          return PageView.builder(
+          return ListView.builder(
             itemCount: expenses.length,
             itemBuilder: (context, index) {
 
