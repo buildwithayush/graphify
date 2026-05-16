@@ -50,7 +50,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
               padding: const EdgeInsets.only(top: 10),
               child: ElevatedButton(
                 onPressed: () async {
-                  final repo = ref.read(expenseRepositoryProvider);
+                  final repo = await ref.read(expenseRepositoryProvider.future);
                   
                     final expense = Expense(
                       category: _textEditingController1.text,
