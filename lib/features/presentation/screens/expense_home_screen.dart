@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
+import 'package:graphify/features/presentation/providers/expenses.dart';
 import 'package:graphify/features/presentation/screens/expense_view.dart';
-
 
 class ExpenseHomeScreen extends ConsumerStatefulWidget {
   const ExpenseHomeScreen({super.key});
@@ -28,22 +28,22 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: Colors.greenAccent,
+                color: Colors.white,
               ),
               child: TextFormField(
                 controller: _textEditingController1,
-                style: TextStyle(backgroundColor: Colors.blue),
+
+                decoration: InputDecoration(hintText: 'Category'),
               ),
             ),
             SizedBox(height: 30),
             Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: Colors.blueGrey,
-              ),
+              decoration: BoxDecoration(shape: BoxShape.rectangle),
               child: TextFormField(
+                keyboardType: TextInputType.number,
                 controller: _textEditingController2,
-                style: TextStyle(backgroundColor: Colors.blue),
+
+                decoration: InputDecoration(hintText: 'Amount'),
               ),
             ),
             Padding(
@@ -51,26 +51,31 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
               child: ElevatedButton(
                 onPressed: () async {
                   final repo = await ref.read(expenseRepositoryProvider.future);
-                  
-                    final expense = Expense(
-                      category: _textEditingController1.text,
-                      amount:
-                          double.tryParse(_textEditingController2.text) ?? 0.0,
-                    );
-        
+
+                  final expense = Expense(
+                    category: _textEditingController1.text,
+                    amount:
+                        double.tryParse(_textEditingController2.text) ?? 0.0,
+                  );
+
                   await repo.addExpense(expense);
+                  ref.invalidate(expensesProvider);
                 },
                 child: Text('Add Expense'),
               ),
-        
             ),
-            ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ExpenseView()));
-            }, child: Text('Neext Screen'))
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ExpenseView()),
+                );
+              },
+              child: Text('Next Screen'),
+            ),
           ],
         ),
       ),
-     
     );
   }
 }
