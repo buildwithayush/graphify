@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:graphify/features/data/providers/expense_repository_provider.dart';
 import 'package:graphify/features/presentation/providers/expenses.dart';
 
 class ExpenseView extends ConsumerStatefulWidget {
   const ExpenseView({super.key});
 
   @override
- ConsumerState<ExpenseView> createState() => _ExpenseViewState();
+  ConsumerState<ExpenseView> createState() => _ExpenseViewState();
 }
 
 class _ExpenseViewState extends ConsumerState<ExpenseView> {
   @override
   Widget build(BuildContext context) {
-
     final expensesAsync = ref.watch(expensesProvider);
 
     return Scaffold(
@@ -22,14 +22,21 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
           return ListView.builder(
             itemCount: expenses.length,
             itemBuilder: (context, index) {
-
               final expense = expenses[index];
 
               return Card(
                 child: ListTile(
                   title: Text(expense.category),
-                  subtitle: Text(
-                    expense.amount.toString(),
+                  subtitle: Text(expense.amount.toString()),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete,color: Colors.red,),
+                    onPressed: () async {
+                      final repo = await ref.read(
+                        expenseRepositoryProvider.future,
+                      );
+                      await repo.deleteExpense(expense.id);
+                      ref.invalidate(expensesProvider);
+                    },
                   ),
                 ),
               );
@@ -37,13 +44,9 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
           );
         },
 
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
 
-        error: (error, stack) => Center(
-          child: Text(error.toString()),
-        ),
+        error: (error, stack) => Center(child: Text(error.toString())),
       ),
     );
   }

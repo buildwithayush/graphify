@@ -60,6 +60,8 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
 
                   await repo.addExpense(expense);
                   ref.invalidate(expensesProvider);
+                  _textEditingController1.clear();
+                  _textEditingController2.clear();
                 },
                 child: Text('Add Expense'),
               ),
