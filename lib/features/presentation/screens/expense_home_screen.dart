@@ -5,6 +5,7 @@ import 'package:graphify/features/data/providers/expense_repository_provider.dar
 import 'package:graphify/features/presentation/providers/expenses.dart';
 import 'package:graphify/features/presentation/screens/expense_chart_screen.dart';
 import 'package:graphify/features/presentation/screens/expense_view.dart';
+import 'package:graphify/features/presentation/widgets/Tdate_time_picker.dart';
 
 class ExpenseHomeScreen extends ConsumerStatefulWidget {
   const ExpenseHomeScreen({super.key});
@@ -17,6 +18,7 @@ TextEditingController _textEditingController1 = TextEditingController();
 TextEditingController _textEditingController2 = TextEditingController();
 
 class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
+  DateTime? expenseDate;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,9 +26,20 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+
             Text('Add Your Expenses'),
             SizedBox(height: 20),
+           TdateTimePicker(
+          
+            onDateSelected: (selectedDate) {
+              expenseDate = selectedDate;
+              ref.invalidate(expensesProvider);
+              
+            },
+          ),
+            SizedBox(height: 20),
             Container(
+
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
                 color: Colors.white,
@@ -57,6 +70,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     category: _textEditingController1.text,
                     amount:
                         double.tryParse(_textEditingController2.text) ?? 0.0,
+                    date: expenseDate,
                   );
 
                   await repo.addExpense(expense);
