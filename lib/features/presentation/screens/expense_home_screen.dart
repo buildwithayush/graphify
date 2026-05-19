@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
 import 'package:graphify/features/presentation/providers/expenses.dart';
+import 'package:graphify/features/presentation/screens/expense_chart_screen.dart';
 import 'package:graphify/features/presentation/screens/expense_view.dart';
 
 class ExpenseHomeScreen extends ConsumerStatefulWidget {
@@ -74,6 +75,15 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                 );
               },
               child: Text('Next Screen'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ExpenseChartScreen()),
+                );
+              },
+              child: Text('Charts Screen'),
             ),
           ],
         ),
