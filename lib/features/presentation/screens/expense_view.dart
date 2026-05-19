@@ -27,7 +27,14 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
               return Card(
                 child: ListTile(
                   title: Text(expense.category),
-                  subtitle: Text(expense.amount.toString()),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Amount: \$${expense.amount}'),
+                      Text('Date: ${expense.date}'),
+                    ],
+                  ),
+                  
                   trailing: IconButton(
                     icon: const Icon(Icons.delete,color: Colors.red,),
                     onPressed: () async {
