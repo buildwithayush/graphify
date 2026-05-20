@@ -122,7 +122,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   MaterialPageRoute(builder: (context) => ExpenseView()),
                 );
               },
-              child: Text('Next Screen'),
+              child: Text('All Expenses'),
             ),
             ElevatedButton(
               onPressed: () {
