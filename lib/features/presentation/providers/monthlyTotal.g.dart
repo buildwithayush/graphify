@@ -6,16 +6,15 @@ part of 'monthlyTotal.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$monthlyTotalHash() => r'786c24be981aa099a0e0feb198fd0cd710142c9b';
+String _$monthlyTotalHash() => r'853bdf5836972acde11ddb3532df22661f88501f';
 
 /// See also [monthlyTotal].
 @ProviderFor(monthlyTotal)
 final monthlyTotalProvider = AutoDisposeProvider<double>.internal(
   monthlyTotal,
   name: r'monthlyTotalProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$monthlyTotalHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$monthlyTotalHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
