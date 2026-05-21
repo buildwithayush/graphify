@@ -12,7 +12,7 @@ class ExpenseView extends ConsumerStatefulWidget {
 }
 
 class _ExpenseViewState extends ConsumerState<ExpenseView> {
-  // Helper to format date cleanly without external package dependencies
+ 
   String _formatDate(DateTime? date) {
     if (date == null) return 'No Date';
     const months = [
@@ -49,7 +49,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
     final monthlyExpense = ref.watch(monthlyTotalProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), // Clean off-white background
+      backgroundColor: const Color(0xFFF8F9FA), 
       appBar: AppBar(
         title: const Text(
           'All Expenses',
@@ -70,7 +70,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
           children: [
             const SizedBox(height: 10),
 
-            // Premium Dark Slate Card for Monthly Total
+           
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24.0),
@@ -119,7 +119,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFF4ADE80), // Premium Mint Green indicator
+                      color: Color(0xFF4ADE80), 
                     ),
                   ),
                 ],
@@ -179,7 +179,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                         ),
                         child: Row(
                           children: [
-                            // Soft tinted icon circle
+                           
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(

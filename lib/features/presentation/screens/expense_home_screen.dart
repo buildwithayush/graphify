@@ -43,7 +43,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
     final categoryState = ref.watch(categoryNotifierProvider);
     
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), // Clean off-white background
+      backgroundColor: const Color(0xFFF8F9FA), 
       appBar: AppBar(
         title: const Text(
           'Graphify',
@@ -71,7 +71,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
             ),
             const SizedBox(height: 16),
             
-            // Container card encapsulating the whole input form
+          \
             Container(
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
@@ -108,7 +108,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   ),
                   const SizedBox(height: 8),
 
-                  // Modernized Dropdown Button Container
+                \
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     decoration: BoxDecoration(
@@ -204,7 +204,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     height: 52,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0F172A), // Dark slate theme
+                        backgroundColor: const Color(0xFF0F172A),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -227,7 +227,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                         _textEditingController1.clear();
                         _textEditingController2.clear();
                         
-                        // Show light snackbar on completion
+                       
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -250,7 +250,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Horizontal secondary navigation buttons
+           
             Row(
               children: [
                 Expanded(
