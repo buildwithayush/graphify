@@ -18,7 +18,7 @@ class _ExpenseChartScreenState extends ConsumerState<ExpenseChartScreen> {
     final expenses = ref.watch(expensesProvider).value ?? [];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6), // Neutral Light Grey Background
+      backgroundColor: const Color(0xFFF3F4F6), 
       appBar: AppBar(
         title: const Text(
           'Analytics',
@@ -45,7 +45,7 @@ class _ExpenseChartScreenState extends ConsumerState<ExpenseChartScreen> {
                     height: 280,
                     padding: const EdgeInsets.fromLTRB(16, 28, 16, 16),
                     decoration: BoxDecoration(
-                      // Deep Elegant Slate Dark Background for strong contrast
+                      
                       gradient: const LinearGradient(
                         colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
                         begin: Alignment.topLeft,
@@ -73,7 +73,7 @@ class _ExpenseChartScreenState extends ConsumerState<ExpenseChartScreen> {
                         barTouchData: BarTouchData(
                           enabled: true,
                           touchTooltipData: BarTouchTooltipData(
-                            getTooltipColor: (_) => Colors.white, // Dark background par white tooltip pop karega
+                            getTooltipColor: (_) => Colors.white, 
                             tooltipPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             getTooltipItem: (group, groupIndex, rod, rodIndex) {
                               if (group.x >= expenses.length) return null;
@@ -108,11 +108,11 @@ class _ExpenseChartScreenState extends ConsumerState<ExpenseChartScreen> {
                   ),
                   const SizedBox(height: 12),
                   Container(
-                    height: 300, // Height barha kar 300 kar di takay bada chart fit ho sake
+                    height: 300,
                     width: double.infinity,
-                    padding: const EdgeInsets.all(16), // Padding thodi kam ki taaki chart ko zyada space mile
+                    padding: const EdgeInsets.all(16), 
                     decoration: BoxDecoration(
-                      // Soft Ice-Blue/White crisp background for distinct separation
+                   
                       gradient: const LinearGradient(
                         colors: [Colors.white, Color(0xFFEBF8FF)],
                         begin: Alignment.topCenter,
@@ -130,8 +130,8 @@ class _ExpenseChartScreenState extends ConsumerState<ExpenseChartScreen> {
                     ),
                     child: const Center(
                       child: SizedBox(
-                        height: 220, // Pie chart ka size 160 se barha kar 220 kiya
-                        width: 220,  // Pie chart ka size 160 se barha kar 220 kiya
+                        height: 220,
+                        width: 220,  
                         child: ExpensePieCharts(),
                       ),
                     ),
@@ -153,10 +153,10 @@ List<BarChartGroupData> buildChartData(List<Expense> expenses, {required bool is
       barRods: [
         BarChartRodData(
           toY: expense.amount?.toDouble() ?? 0.0,
-          // Dark background par fluorescent green aur light background par standard green
+         
           gradient: LinearGradient(
             colors: isDarkBg 
-                ? [const Color(0xFF4ADE80), const Color(0xFF22C55E)] // Vibrant Green for Dark BG
+                ? [const Color(0xFF4ADE80), const Color(0xFF22C55E)] 
                 : [const Color(0xFF86EFAC), const Color(0xFF4ADE80)],
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,

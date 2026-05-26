@@ -83,7 +83,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF0F172A).withOpacity(0.12),
+                    color: const Color(0xFF0F172A).withValues(alpha: 0.12),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   )
@@ -171,7 +171,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                           border: Border.all(color: const Color(0xFFE5E7EB), width: 1.2),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.015),
+                              color: Colors.black.withValues(alpha: 0.015),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
