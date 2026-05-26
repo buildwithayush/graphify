@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:graphify/core/constant/colors.dart';
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
 import 'package:graphify/features/presentation/providers/category_provider.dart';
@@ -7,6 +8,7 @@ import 'package:graphify/features/presentation/providers/expenses.dart';
 import 'package:graphify/features/presentation/screens/expense_chart_screen.dart';
 import 'package:graphify/features/presentation/screens/expense_view.dart';
 import 'package:graphify/features/presentation/widgets/Tdate_time_picker.dart';
+import 'package:graphify/features/settings/presentation/screens/settings_screen.dart';
 
 class ExpenseHomeScreen extends ConsumerStatefulWidget {
   const ExpenseHomeScreen({super.key});
@@ -41,18 +43,31 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final categoryState = ref.watch(categoryNotifierProvider);
-    
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), 
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
+        title:  Text(
           'Graphify',
           style: TextStyle(
-            color: Color(0xFF0F172A), 
+            color: TAppColors.text(context), 
             fontWeight: FontWeight.bold, 
             fontSize: 22,
           ),
         ),
+
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon:  Icon(Icons.settings, color: TAppColors.text(context)),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              ),
+            ),
+          ),
+        ],
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -61,29 +76,28 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+             Text(
               'Add Your Expenses',
               style: TextStyle(
-                fontSize: 16, 
-                fontWeight: FontWeight.w600, 
-                color: Color(0xFF4B5563),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: TAppColors.text(context),
               ),
             ),
             const SizedBox(height: 16),
-            
-          \
+
             Container(
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: const Color(0xFFE5E7EB), width: 1.5),
+                border: Border.all(color: TAppColors.text(context), width: 1.5),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
-                  )
+                  ),
                 ],
               ),
               child: Column(
@@ -98,19 +112,21 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  const Text(
+                   Text(
                     'Category',
                     style: TextStyle(
-                      fontSize: 13, 
-                      fontWeight: FontWeight.w600, 
-                      color: Color(0xFF6B7280),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                     color: TAppColors.text(context),
                     ),
                   ),
                   const SizedBox(height: 8),
 
-                \
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF9FAFB),
                       borderRadius: BorderRadius.circular(14),
@@ -120,13 +136,19 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                       child: DropdownButton<String>(
                         value: categoryState.selectedcategory,
                         isExpanded: true,
-                        icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF4B5563)),
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Color(0xFF4B5563),
+                        ),
                         items: categories.map((String item) {
                           return DropdownMenuItem<String>(
-                            value: item, 
+                            value: item,
                             child: Text(
-                              item, 
-                              style: const TextStyle(fontSize: 15, color: Color(0xFF1F2937)),
+                              item,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF1F2937),
+                              ),
                             ),
                           );
                         }).toList(),
@@ -147,17 +169,28 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                       controller: _textEditingController1,
                       decoration: InputDecoration(
                         hintText: 'Enter Custom Category',
-                        hintStyle: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 14),
+                        hintStyle:  TextStyle(
+                          color: TAppColors.text(context),
+                          fontSize: 14,
+                        ),
                         filled: true,
                         fillColor: const Color(0xFFF9FAFB),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFE5E7EB),
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 1.5),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF3B82F6),
+                            width: 1.5,
+                          ),
                         ),
                       ),
                     ),
@@ -167,8 +200,8 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   const Text(
                     'Amount',
                     style: TextStyle(
-                      fontSize: 13, 
-                      fontWeight: FontWeight.w600, 
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
                       color: Color(0xFF6B7280),
                     ),
                   ),
@@ -178,21 +211,37 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _textEditingController2,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                     decoration: InputDecoration(
                       hintText: '0.00',
-                      hintStyle: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 16),
-                      prefixIcon: const Icon(Icons.currency_rupee, size: 18, color: Color(0xFF4B5563)),
+                      hintStyle: const TextStyle(
+                        color: Color(0xFF9CA3AF),
+                        fontSize: 16,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.currency_rupee,
+                        size: 18,
+                        color: Color(0xFF4B5563),
+                      ),
                       filled: true,
                       fillColor: const Color(0xFFF9FAFB),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
                         borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 1.5),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF3B82F6),
+                          width: 1.5,
+                        ),
                       ),
                     ),
                   ),
@@ -204,7 +253,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     height: 52,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0F172A),
+                        backgroundColor: TAppColors.text(context),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -212,13 +261,17 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                         elevation: 0,
                       ),
                       onPressed: () async {
-                        final repo = await ref.read(expenseRepositoryProvider.future);
+                        final repo = await ref.read(
+                          expenseRepositoryProvider.future,
+                        );
 
                         final expense = Expense(
                           category: categoryState.isCustomSelected
                               ? _textEditingController1.text
                               : categoryState.selectedcategory,
-                          amount: double.tryParse(_textEditingController2.text) ?? 0.0,
+                          amount:
+                              double.tryParse(_textEditingController2.text) ??
+                              0.0,
                           date: expenseDate,
                         );
 
@@ -226,22 +279,28 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                         ref.invalidate(expensesProvider);
                         _textEditingController1.clear();
                         _textEditingController2.clear();
-                        
-                       
+
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: const Text('Expense added successfully'),
                               behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                               backgroundColor: const Color(0xFF10B981),
                             ),
                           );
                         }
                       },
-                      child: const Text(
+                      child:  Text(
                         'Add Expense',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: TAppColors.isDarkMode(context) ? Colors.black : Colors.white,
+                        ),
                       ),
                     ),
                   ),
@@ -250,7 +309,6 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
             ),
             const SizedBox(height: 24),
 
-           
             Row(
               children: [
                 Expanded(
@@ -258,8 +316,11 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     icon: const Icon(Icons.list_alt_rounded, size: 18),
                     label: const Text('All Expenses'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF374151),
-                      side: const BorderSide(color: Color(0xFFD1D5DB), width: 1.5),
+                      foregroundColor: TAppColors.text(context),
+                      side: const BorderSide(
+                        color: Color(0xFFD1D5DB),
+                        width: 1.5,
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -268,7 +329,9 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ExpenseView()),
+                        MaterialPageRoute(
+                          builder: (context) => const ExpenseView(),
+                        ),
                       );
                     },
                   ),
@@ -279,8 +342,11 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     icon: const Icon(Icons.bar_chart_rounded, size: 18),
                     label: const Text('Charts'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF374151),
-                      side: const BorderSide(color: Color(0xFFD1D5DB), width: 1.5),
+                      foregroundColor: TAppColors.text(context),
+                      side: const BorderSide(
+                        color: Color(0xFFD1D5DB),
+                        width: 1.5,
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -289,7 +355,9 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ExpenseChartScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const ExpenseChartScreen(),
+                        ),
                       );
                     },
                   ),
