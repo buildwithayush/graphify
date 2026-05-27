@@ -25,7 +25,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
     return '$day $month, $year';
   }
 
-  // Get a matching icon or visual representation for categories
+  // Categories
   IconData _getCategoryIcon(String category) {
     switch (category.toLowerCase()) {
       case 'food':
@@ -47,21 +47,13 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
   Widget build(BuildContext context) {
     final expensesAsync = ref.watch(expensesProvider);
     final monthlyExpense = ref.watch(monthlyTotalProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), 
+      backgroundColor: theme.scaffoldBackgroundColor, 
       appBar: AppBar(
-        title: const Text(
-          'All Expenses',
-          style: TextStyle(
-            color: Color(0xFF0F172A), 
-            fontWeight: FontWeight.bold, 
-            fontSize: 22,
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+        title: Text('All Expenses', style: theme.textTheme.titleLarge),
+        
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -70,7 +62,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
           children: [
             const SizedBox(height: 10),
 
-           
+            // Top Total Summary Card 
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24.0),
@@ -83,7 +75,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF0F172A).withValues(alpha: 0.12),
+                    color: const Color(0xFF0F172A).withOpacity(theme.brightness == Brightness.dark ? 0.4 : 0.12),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   )
@@ -116,7 +108,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                   ),
                   Text(
                     '₹${monthlyExpense.toStringAsFixed(2)}',
-                    style: const TextStyle(
+                    style:  TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w900,
                       color: Color(0xFF4ADE80), 
@@ -127,14 +119,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
             ),
             const SizedBox(height: 28),
 
-            const Text(
-              'Transaction History',
-              style: TextStyle(
-                fontSize: 16, 
-                fontWeight: FontWeight.bold, 
-                color: Color(0xFF4B5563),
-              ),
-            ),
+            Text('Transaction History', style: theme.textTheme.titleMedium),
             const SizedBox(height: 14),
 
             Expanded(
@@ -145,11 +130,19 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.receipt_long_rounded, size: 64, color: Colors.grey[300]),
+                          Icon(
+                            Icons.receipt_long_rounded, 
+                            size: 64, 
+                            color: theme.brightness == Brightness.dark ? Colors.white24 : Colors.grey[300],
+                          ),
                           const SizedBox(height: 16),
                           Text(
                             'No expenses added yet',
-                            style: TextStyle(color: Colors.grey[500], fontSize: 15, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              color: theme.brightness == Brightness.dark ? Colors.white54 : Colors.grey[500], 
+                              fontSize: 15, 
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),
@@ -166,12 +159,15 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                       return Container(
                         padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: theme.cardColor, 
                           borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: const Color(0xFFE5E7EB), width: 1.2),
+                          border: Border.all(
+                            color: theme.colorScheme.outline.withOpacity(0.15), 
+                            width: 1.2,
+                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.015),
+                              color: Colors.black.withOpacity(theme.brightness == Brightness.dark ? 0.2 : 0.015),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -183,12 +179,16 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF1F5F9),
+                                color: theme.brightness == Brightness.dark 
+                                    ? const Color(0xFF334155) 
+                                    : const Color(0xFFF1F5F9),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Icon(
+                                child: Icon(
                                 _getCategoryIcon(expense.category),
-                                color: const Color(0xFF475569),
+                                color: theme.brightness == Brightness.dark 
+                                    ? Colors.white70 
+                                    : const Color(0xFF475569),
                                 size: 22,
                               ),
                             ),
@@ -201,18 +201,14 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                                 children: [
                                   Text(
                                     expense.category,
-                                    style: const TextStyle(
-                                      fontSize: 15, 
-                                      fontWeight: FontWeight.bold, 
-                                      color: Color(0xFF1E293B),
-                                    ),
+                                    style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     _formatDate(expense.date),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 12, 
-                                      color: Color(0xFF94A3B8),
+                                      color: theme.brightness == Brightness.dark ? Colors.white60 : const Color(0xFF94A3B8),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -220,18 +216,17 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                               ),
                             ),
 
-                            // Amount
+                            // Amount Text
                             Text(
                               '₹${expense.amount}',
-                              style: const TextStyle(
-                                fontSize: 16, 
-                                fontWeight: FontWeight.w800, 
-                                color: Color(0xFF0F172A),
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16,
                               ),
                             ),
                             const SizedBox(width: 8),
 
-                            // Clean Delete Button inside soft red tint
+                            //  Delete Button
                             Material(
                               color: Colors.transparent,
                               child: InkWell(
@@ -246,7 +241,9 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                                 child: Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFFEF2F2),
+                                    color: theme.brightness == Brightness.dark
+                                        ? const Color(0xFF451A1A) 
+                                        : const Color(0xFFFEF2F2), 
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: const Icon(
@@ -263,9 +260,9 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                     },
                   );
                 },
-                loading: () => const Center(
+                loading: () => Center(
                   child: CircularProgressIndicator(
-                    color: Color(0xFF0F172A),
+                    color: theme.colorScheme.primary, 
                   ),
                 ),
                 error: (error, stack) => Center(
