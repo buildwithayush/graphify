@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:graphify/core/constant/colors.dart';
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
 import 'package:graphify/features/presentation/providers/category_provider.dart';
@@ -42,25 +41,23 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+   
+   
+
     final categoryState = ref.watch(categoryNotifierProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title:  Text(
-          'Graphify',
-          style: TextStyle(
-            color: TAppColors.text(context), 
-            fontWeight: FontWeight.bold, 
-            fontSize: 22,
-          ),
-        ),
-
+    
+        title: Text('Graphify', style: theme.textTheme.titleLarge),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-              icon:  Icon(Icons.settings, color: TAppColors.text(context)),
+            
+              icon: const Icon(Icons.settings),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const SettingsScreen()),
@@ -68,33 +65,29 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
             ),
           ),
         ],
-        elevation: 0,
-        backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Text(
-              'Add Your Expenses',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: TAppColors.text(context),
-              ),
-            ),
+            Text('Add Your Expenses', style: theme.textTheme.titleMedium),
             const SizedBox(height: 16),
 
+            // Big Main Container Card
             Container(
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                color: Colors.white,
+               
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: TAppColors.text(context), width: 1.5),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withOpacity(0.15), 
+                  width: 1.5,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(theme.brightness == Brightness.dark ? 0.25 : 0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -112,51 +105,41 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                   Text(
-                    'Category',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                     color: TAppColors.text(context),
-                    ),
-                  ),
+                  Text('Category', style: theme.textTheme.bodyMedium),
                   const SizedBox(height: 8),
 
+                  // Dropdown Container Wrapper 
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 4,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF9FAFB),
+                      color: theme.inputDecorationTheme.fillColor,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: const Color(0xFFE5E7EB)),
+                      border: Border.all(
+                        color: theme.brightness == Brightness.dark 
+                            ? const Color(0xFF334155) 
+                            : const Color(0xFFE5E7EB),
+                      ),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: categoryState.selectedcategory,
                         isExpanded: true,
-                        icon: const Icon(
+                        dropdownColor: theme.cardColor, 
+                        icon: Icon(
                           Icons.keyboard_arrow_down,
-                          color: Color(0xFF4B5563),
+                          color: theme.brightness == Brightness.dark 
+                              ? Colors.white70 
+                              : const Color(0xFF4B5563),
                         ),
                         items: categories.map((String item) {
                           return DropdownMenuItem<String>(
                             value: item,
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: Color(0xFF1F2937),
-                              ),
-                            ),
+                            child: Text(item, style: theme.textTheme.bodyLarge),
                           );
                         }).toList(),
                         onChanged: (newValue) {
                           if (newValue != null) {
-                            ref
-                                .read(categoryNotifierProvider.notifier)
-                                .updateCategory(newValue);
+                            ref.read(categoryNotifierProvider.notifier).updateCategory(newValue);
                           }
                         },
                       ),
@@ -167,94 +150,37 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     const SizedBox(height: 16),
                     TextField(
                       controller: _textEditingController1,
-                      decoration: InputDecoration(
+                      
+                      decoration: const InputDecoration(
                         hintText: 'Enter Custom Category',
-                        hintStyle:  TextStyle(
-                          color: TAppColors.text(context),
-                          fontSize: 14,
-                        ),
-                        filled: true,
-                        fillColor: const Color(0xFFF9FAFB),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFE5E7EB),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF3B82F6),
-                            width: 1.5,
-                          ),
-                        ),
                       ),
                     ),
                   ],
 
                   const SizedBox(height: 20),
-                  const Text(
-                    'Amount',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF6B7280),
-                    ),
-                  ),
+                  Text('Amount', style: theme.textTheme.bodyMedium),
                   const SizedBox(height: 8),
 
                   // Amount TextField
                   TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _textEditingController2,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    decoration: InputDecoration(
+                    style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                    decoration: const InputDecoration(
                       hintText: '0.00',
-                      hintStyle: const TextStyle(
-                        color: Color(0xFF9CA3AF),
-                        fontSize: 16,
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.currency_rupee,
-                        size: 18,
-                        color: Color(0xFF4B5563),
-                      ),
-                      filled: true,
-                      fillColor: const Color(0xFFF9FAFB),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF3B82F6),
-                          width: 1.5,
-                        ),
-                      ),
+                      prefixIcon: Icon(Icons.currency_rupee, size: 18),
                     ),
                   ),
                   const SizedBox(height: 28),
 
-                  // Primary Action Button: Add Expense
+                  // Add Expense
                   SizedBox(
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: TAppColors.text(context),
-                        foregroundColor: Colors.white,
+                        backgroundColor: theme.colorScheme.primary, 
+                        foregroundColor: theme.brightness == Brightness.dark ? Colors.black : Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -269,9 +195,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                           category: categoryState.isCustomSelected
                               ? _textEditingController1.text
                               : categoryState.selectedcategory,
-                          amount:
-                              double.tryParse(_textEditingController2.text) ??
-                              0.0,
+                          amount: double.tryParse(_textEditingController2.text) ?? 0.0,
                           date: expenseDate,
                         );
 
@@ -288,18 +212,16 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              backgroundColor: const Color(0xFF10B981),
+                              backgroundColor: const Color(0xFF10B981), 
                             ),
                           );
                         }
                       },
-                      child:  Text(
+                      child: const Text(
                         'Add Expense',
-                        
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: TAppColors.isDarkMode(context) ? Colors.black : Colors.white,
                         ),
                       ),
                     ),
@@ -309,23 +231,13 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
             ),
             const SizedBox(height: 24),
 
+          
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.list_alt_rounded, size: 18),
                     label: const Text('All Expenses'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: TAppColors.text(context),
-                      side: const BorderSide(
-                        color: Color(0xFFD1D5DB),
-                        width: 1.5,
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -341,17 +253,6 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.bar_chart_rounded, size: 18),
                     label: const Text('Charts'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: TAppColors.text(context),
-                      side: const BorderSide(
-                        color: Color(0xFFD1D5DB),
-                        width: 1.5,
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
                     onPressed: () {
                       Navigator.push(
                         context,

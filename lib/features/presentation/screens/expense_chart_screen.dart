@@ -16,45 +16,46 @@ class _ExpenseChartScreenState extends ConsumerState<ExpenseChartScreen> {
   @override
   Widget build(BuildContext context) {
     final expenses = ref.watch(expensesProvider).value ?? [];
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6), 
+      backgroundColor: theme.scaffoldBackgroundColor, 
       appBar: AppBar(
-        title: const Text(
-          'Analytics',
-          style: TextStyle(color: Color(0xFF1F2937), fontWeight: FontWeight.bold, fontSize: 22),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Color(0xFF1F2937)),
+        title: Text('Analytics', style: theme.textTheme.titleLarge),
       ),
       body: expenses.isEmpty
-          ? const Center(child: Text('No data available', style: TextStyle(color: Colors.grey)))
+          ? Center(
+              child: Text(
+                'No data available', 
+                style: TextStyle(color: isDark ? Colors.white54 : Colors.grey),
+              ),
+            )
           : SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Bar Chart Section
-                  const Text(
-                    'Monthly Overview',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xFF4B5563)),
-                  ),
+                  Text('Monthly Overview', style: theme.textTheme.titleMedium),
                   const SizedBox(height: 12),
+                  
+                  // Monthly overview chart box
                   Container(
                     height: 280,
                     padding: const EdgeInsets.fromLTRB(16, 28, 16, 16),
                     decoration: BoxDecoration(
-                      
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
+                      gradient: LinearGradient(
+                        colors: isDark 
+                            ? [const Color(0xFF1E293B), const Color(0xFF0F172A)] 
+                            : [const Color(0xFF1E293B), const Color(0xFF0F172A)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF0F172A).withOpacity(0.12),
+                          color: const Color(0xFF0F172A).withOpacity(isDark ? 0.35 : 0.12),
                           blurRadius: 24,
                           offset: const Offset(0, 8),
                         )
@@ -73,19 +74,22 @@ class _ExpenseChartScreenState extends ConsumerState<ExpenseChartScreen> {
                         barTouchData: BarTouchData(
                           enabled: true,
                           touchTooltipData: BarTouchTooltipData(
-                            getTooltipColor: (_) => Colors.white, 
+                            getTooltipColor: (_) => isDark ? const Color(0xFF334155) : Colors.white, 
                             tooltipPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             getTooltipItem: (group, groupIndex, rod, rodIndex) {
                               if (group.x >= expenses.length) return null;
                               final expense = expenses[group.x];
                               return BarTooltipItem(
                                 '${expense.category}\n',
-                                const TextStyle(color: Color(0xFF4B5563), fontSize: 11),
+                                TextStyle(
+                                  color: isDark ? Colors.white70 : const Color(0xFF4B5563), 
+                                  fontSize: 11,
+                                ),
                                 children: [
                                   TextSpan(
                                     text: '₹${expense.amount}',
-                                    style: const TextStyle(
-                                      color: Color(0xFF1E293B),
+                                    style: TextStyle(
+                                      color: isDark ? Colors.white : const Color(0xFF1E293B),
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
                                     ),
@@ -102,27 +106,24 @@ class _ExpenseChartScreenState extends ConsumerState<ExpenseChartScreen> {
                   const SizedBox(height: 36),
 
                   // Pie Chart Section
-                  const Text(
-                    'Expense Distribution',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xFF4B5563)),
-                  ),
+                  Text('Expense Distribution', style: theme.textTheme.titleMedium),
                   const SizedBox(height: 12),
+                  
+                  // Adaptive Pie Chart container
                   Container(
                     height: 300,
                     width: double.infinity,
                     padding: const EdgeInsets.all(16), 
                     decoration: BoxDecoration(
-                   
-                      gradient: const LinearGradient(
-                        colors: [Colors.white, Color(0xFFEBF8FF)],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
+                      color: theme.cardColor, 
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
+                      border: Border.all(
+                        color: theme.colorScheme.outline.withOpacity(0.15), 
+                        width: 1.5,
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
                           blurRadius: 16,
                           offset: const Offset(0, 6),
                         )
@@ -143,6 +144,7 @@ class _ExpenseChartScreenState extends ConsumerState<ExpenseChartScreen> {
   }
 }
 
+
 List<BarChartGroupData> buildChartData(List<Expense> expenses, {required bool isDarkBg}) {
   return expenses.asMap().entries.map((entry) {
     final index = entry.key;
@@ -153,7 +155,6 @@ List<BarChartGroupData> buildChartData(List<Expense> expenses, {required bool is
       barRods: [
         BarChartRodData(
           toY: expense.amount?.toDouble() ?? 0.0,
-         
           gradient: LinearGradient(
             colors: isDarkBg 
                 ? [const Color(0xFF4ADE80), const Color(0xFF22C55E)] 
