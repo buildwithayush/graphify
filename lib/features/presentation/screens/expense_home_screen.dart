@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:graphify/core/constant/colors.dart';
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
 import 'package:graphify/features/presentation/providers/category_provider.dart';
@@ -110,7 +111,10 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
 
                   // Dropdown Container Wrapper 
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: theme.inputDecorationTheme.fillColor,
                       borderRadius: BorderRadius.circular(14),
@@ -195,7 +199,9 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                           category: categoryState.isCustomSelected
                               ? _textEditingController1.text
                               : categoryState.selectedcategory,
-                          amount: double.tryParse(_textEditingController2.text) ?? 0.0,
+                          amount:
+                              double.tryParse(_textEditingController2.text) ??
+                              0.0,
                           date: expenseDate,
                         );
 
@@ -217,7 +223,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                           );
                         }
                       },
-                      child: const Text(
+                      child:  Text(
                         'Add Expense',
                         style: TextStyle(
                           fontSize: 16,
