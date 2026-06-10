@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:graphify/core/constant/colors.dart';
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
 import 'package:graphify/features/presentation/providers/category_provider.dart';
 import 'package:graphify/features/presentation/providers/expenses.dart';
 import 'package:graphify/features/presentation/screens/expense_chart_screen.dart';
 import 'package:graphify/features/presentation/screens/expense_view.dart';
+import 'package:graphify/features/presentation/screens/expenses_card_screen.dart';
 import 'package:graphify/features/presentation/widgets/Tdate_time_picker.dart';
 import 'package:graphify/features/settings/presentation/screens/settings_screen.dart';
 
@@ -183,8 +183,8 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     height: 52,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primary, 
-                        foregroundColor: theme.brightness == Brightness.dark ? Colors.black : Colors.white,
+                        backgroundColor: theme.brightness == Brightness.dark ? Colors.black : Colors.blueGrey, 
+                        foregroundColor: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -236,44 +236,43 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
               ),
             ),
             const SizedBox(height: 24),
-
-          
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    icon: const Icon(Icons.list_alt_rounded, size: 18),
-                    label: const Text('All Expenses'),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ExpenseView(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    icon: const Icon(Icons.bar_chart_rounded, size: 18),
-                    label: const Text('Charts'),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ExpenseChartScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
+        
       ),
+    bottomNavigationBar: BottomAppBar(
+    
+      child: Row(
+        children: [
+          IconButton(onPressed: (){
+               Navigator.push(context, MaterialPageRoute(builder: (context){
+                return ExpenseHomeScreen();
+               }));
+          }, icon: Icon(Icons.home)),
+          Spacer(),
+          IconButton(onPressed: (){
+             Navigator.push(context, MaterialPageRoute(builder: (context){
+                return ExpenseView();
+               }));
+          }, icon: Icon(Icons.list_alt)),
+            Spacer(),
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return ExpensesCardScreen();
+            }));
+          }, icon: Icon(Icons.currency_rupee)),
+              Spacer(),
+          IconButton(onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                return ExpenseChartScreen();
+               }));
+          }, icon: Icon(Icons.add_chart)),
+           
+
+        ],
+      ),
+
+    )
     );
   }
 }

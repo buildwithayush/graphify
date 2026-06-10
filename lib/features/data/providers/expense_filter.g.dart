@@ -1,26 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'theme_provider.dart';
+part of 'expense_filter.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$themeNotifierHash() => r'f72329e28c7539df035a2dfe0b1e33b2aceae3e0';
+String _$expenseFilterNotifierHash() =>
+    r'5760bb964b27134497169513dbb7feda691e37ee';
 
-/// See also [ThemeNotifier].
-@ProviderFor(ThemeNotifier)
-final themeNotifierProvider =
-    AutoDisposeNotifierProvider<ThemeNotifier, ThemeMode>.internal(
-  ThemeNotifier.new,
-  name: r'themeNotifierProvider',
+/// See also [ExpenseFilterNotifier].
+@ProviderFor(ExpenseFilterNotifier)
+final expenseFilterNotifierProvider =
+    AutoDisposeNotifierProvider<ExpenseFilterNotifier, ExpenseFilter>.internal(
+  ExpenseFilterNotifier.new,
+  name: r'expenseFilterNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$themeNotifierHash,
+      : _$expenseFilterNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ThemeNotifier = AutoDisposeNotifier<ThemeMode>;
+typedef _$ExpenseFilterNotifier = AutoDisposeNotifier<ExpenseFilter>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

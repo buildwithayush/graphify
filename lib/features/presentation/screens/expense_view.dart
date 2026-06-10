@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:graphify/features/data/providers/expense_filter.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
+import 'package:graphify/features/data/providers/filtered_expenses.dart';
+import 'package:graphify/features/expenses/enums/expense_filter.dart';
 import 'package:graphify/features/presentation/providers/expenses.dart';
-import 'package:graphify/features/presentation/providers/monthlyTotal.dart';
 
 class ExpenseView extends ConsumerStatefulWidget {
   const ExpenseView({super.key});
@@ -12,6 +14,22 @@ class ExpenseView extends ConsumerStatefulWidget {
 }
 
 class _ExpenseViewState extends ConsumerState<ExpenseView> {
+
+List<DropdownMenuItem<ExpenseFilter>> dropitems =[
+  DropdownMenuItem(
+    value: ExpenseFilter.today,
+    child: Text('Today')),
+     DropdownMenuItem(
+    value: ExpenseFilter.week,
+    child: Text('This Week')),
+     DropdownMenuItem(
+    value: ExpenseFilter.month,
+    child: Text('This Month')),
+     DropdownMenuItem(
+    value: ExpenseFilter.year,
+    child: Text('This Year')),
+] ;
+
  
   String _formatDate(DateTime? date) {
     if (date == null) return 'No Date';
@@ -45,13 +63,14 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
 
   @override
   Widget build(BuildContext context) {
-    final expensesAsync = ref.watch(expensesProvider);
-    final monthlyExpense = ref.watch(monthlyTotalProvider);
+    final expensesAsync = ref.watch(filteredExpensesProvider);
+   
     final theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor, 
       appBar: AppBar(
+        centerTitle: true,
         title: Text('All Expenses', style: theme.textTheme.titleLarge),
         
       ),
@@ -62,64 +81,17 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
           children: [
             const SizedBox(height: 10),
 
-            // Top Total Summary Card 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24.0),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF0F172A).withOpacity(theme.brightness == Brightness.dark ? 0.4 : 0.12),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  )
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Monthly Limit & Total',
-                        style: TextStyle(
-                          fontSize: 13, 
-                          color: Color(0xFF94A3B8), 
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Monthly Total',
-                        style: TextStyle(
-                          fontSize: 18, 
-                          color: Colors.white, 
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    '₹${monthlyExpense.toStringAsFixed(2)}',
-                    style:  TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF4ADE80), 
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 28),
-
-            Text('Transaction History', style: theme.textTheme.titleMedium),
+           Row(
+            children: [
+               Text('Transaction History', style: theme.textTheme.titleMedium),
+               Spacer(),
+               DropdownButton<ExpenseFilter>(
+                value: ref.watch(expenseFilterNotifierProvider),
+                items: dropitems, onChanged:(ExpenseFilter? filter){
+                   ref.read(expenseFilterNotifierProvider.notifier).changeFilter(filter!);
+               } )
+            ],
+           ),
             const SizedBox(height: 14),
 
             Expanded(
