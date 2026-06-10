@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphify/features/data/providers/expense_filter.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
 import 'package:graphify/features/data/providers/filtered_expenses.dart';
+import 'package:graphify/features/data/providers/search_query.dart';
 import 'package:graphify/features/expenses/enums/expense_filter.dart';
 import 'package:graphify/features/presentation/providers/expenses.dart';
 
@@ -14,6 +15,8 @@ class ExpenseView extends ConsumerStatefulWidget {
 }
 
 class _ExpenseViewState extends ConsumerState<ExpenseView> {
+
+TextEditingController searchController = TextEditingController();
 
 List<DropdownMenuItem<ExpenseFilter>> dropitems =[
   DropdownMenuItem(
@@ -28,6 +31,9 @@ List<DropdownMenuItem<ExpenseFilter>> dropitems =[
      DropdownMenuItem(
     value: ExpenseFilter.year,
     child: Text('This Year')),
+     DropdownMenuItem(
+    value: ExpenseFilter.alltime,
+    child: Text('All Time')),
 ] ;
 
  
@@ -64,6 +70,7 @@ List<DropdownMenuItem<ExpenseFilter>> dropitems =[
   @override
   Widget build(BuildContext context) {
     final expensesAsync = ref.watch(filteredExpensesProvider);
+    final searchQuery = ref.watch(searchQueryProvider);
    
     final theme = Theme.of(context);
 
@@ -79,8 +86,9 @@ List<DropdownMenuItem<ExpenseFilter>> dropitems =[
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+      
             const SizedBox(height: 10),
-
+             
            Row(
             children: [
                Text('Transaction History', style: theme.textTheme.titleMedium),
@@ -93,7 +101,22 @@ List<DropdownMenuItem<ExpenseFilter>> dropitems =[
             ],
            ),
             const SizedBox(height: 14),
-
+           TextFormField(
+              controller: searchController,
+              decoration:  InputDecoration(
+              hintText: 'Search Category',
+               prefixIcon: Icon(Icons.search),
+               suffixIcon: searchQuery.isNotEmpty? IconButton(onPressed: (){
+                searchController.clear();
+                ref.read(searchQueryProvider.notifier).clear();
+               }, icon: Icon(Icons.clear)) : null ,
+                 border: OutlineInputBorder(),
+                 ),
+                 onChanged: (value) {
+                   ref.read(searchQueryProvider.notifier).update(value);
+                 },
+                   ),
+             const SizedBox(height: 14),
             Expanded(
               child: expensesAsync.when(
                 data: (expenses) {
