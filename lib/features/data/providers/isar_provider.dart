@@ -1,3 +1,4 @@
+import 'package:graphify/features/budget/models/budget.dart';
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:isar/isar.dart';
@@ -15,5 +16,5 @@ Future<Isar> isar(IsarRef ref) async {
 
   final dir = await getApplicationDocumentsDirectory();
 
-  return await Isar.open([ExpenseSchema], directory: dir.path);
+  return await Isar.open([ExpenseSchema,BudgetSchema], directory: dir.path);
 }

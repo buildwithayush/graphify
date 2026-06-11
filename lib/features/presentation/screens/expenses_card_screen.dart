@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:graphify/features/budget/providers/budget_service_provider.dart';
+import 'package:graphify/features/budget/providers/current_month_budget_provider.dart';
+import 'package:graphify/features/budget/providers/monthy_total_budget.dart';
+import 'package:graphify/features/budget/widgets/bottom_sheet.dart';
 import 'package:graphify/features/presentation/providers/monthlyTotal.dart';
+import 'package:graphify/features/presentation/widgets/monthy_expense_card.dart';
 
 class ExpensesCardScreen extends ConsumerStatefulWidget {
   const ExpensesCardScreen({super.key});
@@ -12,69 +17,43 @@ class ExpensesCardScreen extends ConsumerStatefulWidget {
 class _ExpensesCardScreenState extends ConsumerState<ExpensesCardScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-     final monthlyExpense = ref.watch(monthlyTotalProvider);
+    final monthlyExpense = ref.watch(monthlyTotalProvider);
+    final monthlyBudget = ref.watch(monthlyTotalBudgetProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Monthly Exenses'),
+        title: Row(
+          children: [
+            Text('Expenses & Budget'),
+            Spacer(),
+            TextButton(
+              onPressed: () async {
+                final budget = await ref.read(budgetProvider.future);
+                if (!context.mounted) return;
+                showBudgetBottomSheet(context, (amount) async {
+                  await budget.setBudget(amount);
+                  if (!context.mounted) return;
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Budget updated to ₹$amount')),
+                  );
+                });
+              },
+              child: Icon(Icons.edit, size: 21),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(24.0),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF0F172A).withOpacity(
-                    theme.brightness == Brightness.dark ? 0.4 : 0.12,
-                  ),
-                  blurRadius: 15,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Monthly Limit & Total',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Color(0xFF94A3B8),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Monthly Total',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  '₹${monthlyExpense.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFF4ADE80),
-                  ),
-                ),
-              ],
-            ),
+          CustomDashboardCard(
+            topTitle: 'Monthly Limit And Total',
+            mainTitle: 'Monthly Total',
+            displayAmount: '$monthlyExpense',
+          ),
+          CustomDashboardCard(
+            topTitle: 'Monthly Budget',
+            mainTitle: 'Budget',
+            displayAmount: '$monthlyBudget',
           ),
         ],
       ),
