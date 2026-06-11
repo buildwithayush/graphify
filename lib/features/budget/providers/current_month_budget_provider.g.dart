@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'filtered_expenses.dart';
+part of 'current_month_budget_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filteredExpensesHash() => r'26201053d3485d9e3a55f2085806bf4fa6fb44e6';
+String _$currentMonthBudgetHash() =>
+    r'3e130c13a40a6580709b15c111c2e2035e35dc8b';
 
-/// See also [filteredExpenses].
-@ProviderFor(filteredExpenses)
-final filteredExpensesProvider =
-    AutoDisposeProvider<AsyncValue<List<Expense>>>.internal(
-  filteredExpenses,
-  name: r'filteredExpensesProvider',
+/// See also [currentMonthBudget].
+@ProviderFor(currentMonthBudget)
+final currentMonthBudgetProvider = AutoDisposeStreamProvider<Budget?>.internal(
+  currentMonthBudget,
+  name: r'currentMonthBudgetProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$filteredExpensesHash,
+      : _$currentMonthBudgetHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef FilteredExpensesRef = AutoDisposeProviderRef<AsyncValue<List<Expense>>>;
+typedef CurrentMonthBudgetRef = AutoDisposeStreamProviderRef<Budget?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
