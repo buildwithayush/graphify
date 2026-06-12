@@ -55,7 +55,7 @@ AsyncValue<List<Expense>> filteredExpenses(Ref ref) {
         );
       }).toList();
     }
-    filtered.sort((a, b) => b.date.compareTo(a.date!));
+    filtered.sort((a, b) => b.date.compareTo(a.date));
 
     return filtered;
   });

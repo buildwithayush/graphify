@@ -14,8 +14,8 @@ Future<Map<String,double>> categoryTotals(CategoryTotalsRef ref)async{
   for (final expense in expenses) {
     totals.update(
       expense.category,
-      (value) => value + expense.amount!,
-      ifAbsent: () => expense.amount!,
+      (value) => value + expense.amount,
+      ifAbsent: () => expense.amount,
     ); 
   }
   return totals;

@@ -6,11 +6,11 @@ part of 'expenses.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$expensesHash() => r'cfc13ee694880e7fea18ef7e668c5e2b12570f00';
+String _$expensesHash() => r'5519058fb2f3ad7c36a4160ed55eb816688d85aa';
 
 /// See also [expenses].
 @ProviderFor(expenses)
-final expensesProvider = AutoDisposeFutureProvider<List<Expense>>.internal(
+final expensesProvider = AutoDisposeStreamProvider<List<Expense>>.internal(
   expenses,
   name: r'expensesProvider',
   debugGetCreateSourceHash:
@@ -19,6 +19,6 @@ final expensesProvider = AutoDisposeFutureProvider<List<Expense>>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef ExpensesRef = AutoDisposeFutureProviderRef<List<Expense>>;
+typedef ExpensesRef = AutoDisposeStreamProviderRef<List<Expense>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

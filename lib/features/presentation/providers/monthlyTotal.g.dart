@@ -6,7 +6,7 @@ part of 'monthlyTotal.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$monthlyTotalHash() => r'853bdf5836972acde11ddb3532df22661f88501f';
+String _$monthlyTotalHash() => r'8737685ace787a75308238aea7c11aea08d88587';
 
 /// See also [monthlyTotal].
 @ProviderFor(monthlyTotal)
