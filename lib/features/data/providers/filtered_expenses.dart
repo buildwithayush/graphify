@@ -22,25 +22,25 @@ AsyncValue<List<Expense>> filteredExpenses(Ref ref) {
     switch (filter) {
       case ExpenseFilter.today:
         filtered = expenses.where((expense) {
-          return expense.date!.year == now.year &&
-              expense.date!.month == now.month &&
-              expense.date!.day == now.day;
+          return expense.date.year == now.year &&
+              expense.date.month == now.month &&
+              expense.date.day == now.day;
         }).toList();
         break;
       case ExpenseFilter.week:
         filtered = expenses.where((expenses) {
-          return expenses.date!.isAfter(weekAgo);
+          return expenses.date.isAfter(weekAgo);
         }).toList();
         break;
       case ExpenseFilter.month:
         filtered = expenses.where((expenses) {
-          return expenses.date!.year == now.year &&
-              expenses.date!.month == now.month;
+          return expenses.date.year == now.year &&
+              expenses.date.month == now.month;
         }).toList();
         break;
       case ExpenseFilter.year:
         filtered = expenses.where((expenses) {
-          return expenses.date!.year == now.year;
+          return expenses.date.year == now.year;
         }).toList();
         break;
     case ExpenseFilter.alltime:
@@ -55,7 +55,7 @@ AsyncValue<List<Expense>> filteredExpenses(Ref ref) {
         );
       }).toList();
     }
-    filtered.sort((a, b) => b.date!.compareTo(a.date!));
+    filtered.sort((a, b) => b.date.compareTo(a.date!));
 
     return filtered;
   });

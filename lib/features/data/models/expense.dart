@@ -7,14 +7,14 @@ class Expense {
   Id id = Isar.autoIncrement;
 
   @Index() 
-  DateTime? date;
+  DateTime date;
 
-  double? amount;
+  double amount;
 
   
   @Index(type: IndexType.value)
   String category = '';
 
   
-  Expense({this.date, this.amount,  this.category = ''});
+  Expense({required this.date, this.amount = 0.0,  this.category = ''});
 }

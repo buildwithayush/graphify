@@ -102,9 +102,9 @@ Expense _expenseDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Expense(
-    amount: reader.readDoubleOrNull(offsets[0]),
+    amount: reader.readDoubleOrNull(offsets[0]) ?? 0.0,
     category: reader.readStringOrNull(offsets[1]) ?? '',
-    date: reader.readDateTimeOrNull(offsets[2]),
+    date: reader.readDateTime(offsets[2]),
   );
   object.id = id;
   return object;
@@ -118,11 +118,11 @@ P _expenseDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset) ?? 0.0) as P;
     case 1:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 2:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -230,28 +230,7 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterWhereClause> dateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'date',
-        value: [null],
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterWhereClause> dateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'date',
-        lower: [null],
-        includeLower: false,
-        upper: [],
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterWhereClause> dateEqualTo(
-      DateTime? date) {
+  QueryBuilder<Expense, Expense, QAfterWhereClause> dateEqualTo(DateTime date) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'date',
@@ -261,7 +240,7 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
   }
 
   QueryBuilder<Expense, Expense, QAfterWhereClause> dateNotEqualTo(
-      DateTime? date) {
+      DateTime date) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -296,7 +275,7 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
   }
 
   QueryBuilder<Expense, Expense, QAfterWhereClause> dateGreaterThan(
-    DateTime? date, {
+    DateTime date, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -310,7 +289,7 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
   }
 
   QueryBuilder<Expense, Expense, QAfterWhereClause> dateLessThan(
-    DateTime? date, {
+    DateTime date, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -324,8 +303,8 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
   }
 
   QueryBuilder<Expense, Expense, QAfterWhereClause> dateBetween(
-    DateTime? lowerDate,
-    DateTime? upperDate, {
+    DateTime lowerDate,
+    DateTime upperDate, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -479,24 +458,8 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
 
 extension ExpenseQueryFilter
     on QueryBuilder<Expense, Expense, QFilterCondition> {
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> amountIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'amount',
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> amountIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'amount',
-      ));
-    });
-  }
-
   QueryBuilder<Expense, Expense, QAfterFilterCondition> amountEqualTo(
-    double? value, {
+    double value, {
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -509,7 +472,7 @@ extension ExpenseQueryFilter
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> amountGreaterThan(
-    double? value, {
+    double value, {
     bool include = false,
     double epsilon = Query.epsilon,
   }) {
@@ -524,7 +487,7 @@ extension ExpenseQueryFilter
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> amountLessThan(
-    double? value, {
+    double value, {
     bool include = false,
     double epsilon = Query.epsilon,
   }) {
@@ -539,8 +502,8 @@ extension ExpenseQueryFilter
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> amountBetween(
-    double? lower,
-    double? upper, {
+    double lower,
+    double upper, {
     bool includeLower = true,
     bool includeUpper = true,
     double epsilon = Query.epsilon,
@@ -687,24 +650,8 @@ extension ExpenseQueryFilter
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> dateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'date',
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> dateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'date',
-      ));
-    });
-  }
-
   QueryBuilder<Expense, Expense, QAfterFilterCondition> dateEqualTo(
-      DateTime? value) {
+      DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'date',
@@ -714,7 +661,7 @@ extension ExpenseQueryFilter
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> dateGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -727,7 +674,7 @@ extension ExpenseQueryFilter
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> dateLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -740,8 +687,8 @@ extension ExpenseQueryFilter
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> dateBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -934,7 +881,7 @@ extension ExpenseQueryProperty
     });
   }
 
-  QueryBuilder<Expense, double?, QQueryOperations> amountProperty() {
+  QueryBuilder<Expense, double, QQueryOperations> amountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'amount');
     });
@@ -946,7 +893,7 @@ extension ExpenseQueryProperty
     });
   }
 
-  QueryBuilder<Expense, DateTime?, QQueryOperations> dateProperty() {
+  QueryBuilder<Expense, DateTime, QQueryOperations> dateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'date');
     });
