@@ -13,9 +13,8 @@ class ExpenseRepository {
     });
   }
 
-  // Get All Expenses
-  Future<List<Expense>> getAllExpenses() async {
-    return await isar.expenses.where().findAll();
+  Stream<List<Expense>> watchAllExpenses(){
+       return isar.expenses.where().watch(fireImmediately: true);
   }
 
   // Update Expense

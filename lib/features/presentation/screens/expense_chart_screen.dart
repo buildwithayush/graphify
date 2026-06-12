@@ -154,7 +154,7 @@ List<BarChartGroupData> buildChartData(List<Expense> expenses, {required bool is
       x: index,
       barRods: [
         BarChartRodData(
-          toY: expense.amount?.toDouble() ?? 0.0,
+          toY: expense.amount.toDouble(),
           gradient: LinearGradient(
             colors: isDarkBg 
                 ? [const Color(0xFF4ADE80), const Color(0xFF22C55E)] 

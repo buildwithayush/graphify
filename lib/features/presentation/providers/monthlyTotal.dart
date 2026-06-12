@@ -12,13 +12,13 @@ double monthlyTotal(MonthlyTotalRef ref) {
       final now = DateTime.now();
 
       final monthlyExpenses = expensesList.where((expense) {
-        return expense.date?.month == now.month &&
-            expense.date?.year == now.year;
+        return expense.date.month == now.month &&
+            expense.date.year == now.year;
       });
 
       return monthlyExpenses.fold(
         0.0,
-        (sum, expense) => sum + (expense.amount ?? 0.0),
+        (sum, expense) => sum + expense.amount,
       );
     },
     error: (error, stackTrace) => 0.0,

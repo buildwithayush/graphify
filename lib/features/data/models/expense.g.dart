@@ -102,7 +102,7 @@ Expense _expenseDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Expense(
-    amount: reader.readDoubleOrNull(offsets[0]) ?? 0.0,
+    amount: reader.readDouble(offsets[0]),
     category: reader.readStringOrNull(offsets[1]) ?? '',
     date: reader.readDateTime(offsets[2]),
   );
@@ -118,7 +118,7 @@ P _expenseDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDoubleOrNull(offset) ?? 0.0) as P;
+      return (reader.readDouble(offset)) as P;
     case 1:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 2:

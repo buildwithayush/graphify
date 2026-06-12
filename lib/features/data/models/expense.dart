@@ -16,5 +16,5 @@ class Expense {
   String category = '';
 
   
-  Expense({required this.date, this.amount = 0.0,  this.category = ''});
+  Expense({required this.date, required this.amount ,  this.category = ''});
 }

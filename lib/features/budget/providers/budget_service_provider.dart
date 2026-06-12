@@ -1,4 +1,3 @@
-import 'package:graphify/features/budget/models/budget.dart';
 import 'package:graphify/features/budget/services/budget_service.dart';
 import 'package:graphify/features/data/providers/isar_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

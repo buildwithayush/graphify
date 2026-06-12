@@ -5,7 +5,6 @@ import 'package:graphify/features/data/providers/expense_repository_provider.dar
 import 'package:graphify/features/data/providers/filtered_expenses.dart';
 import 'package:graphify/features/data/providers/search_query.dart';
 import 'package:graphify/features/expenses/enums/expense_filter.dart';
-import 'package:graphify/features/presentation/providers/expenses.dart';
 
 class ExpenseView extends ConsumerStatefulWidget {
   const ExpenseView({super.key});
@@ -151,105 +150,102 @@ List<DropdownMenuItem<ExpenseFilter>> dropitems =[
                     itemBuilder: (context, index) {
                       final expense = expenses[index];
 
-                      return Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: theme.cardColor, 
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: theme.colorScheme.outline.withOpacity(0.15), 
-                            width: 1.2,
+                      return Dismissible(
+                        key: Key(expense.id.toString()),
+                        direction: DismissDirection.endToStart,
+                        dismissThresholds: const {
+                          DismissDirection.endToStart : 0.7
+                        },background: Container(
+                          alignment: Alignment.centerRight,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEF4444),
+
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(theme.brightness == Brightness.dark ? 0.2 : 0.015),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+                          child: const Icon(Icons.delete_rounded,color: Colors.white,size: 24,),
                         ),
-                        child: Row(
-                          children: [
-                           
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: theme.brightness == Brightness.dark 
-                                    ? const Color(0xFF334155) 
-                                    : const Color(0xFFF1F5F9),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                                child: Icon(
-                                _getCategoryIcon(expense.category),
-                                color: theme.brightness == Brightness.dark 
-                                    ? Colors.white70 
-                                    : const Color(0xFF475569),
-                                size: 22,
-                              ),
+                        onDismissed: (direction) async {
+                                  final repo = await ref.watch(expenseRepositoryProvider.future);
+                                 await  repo.deleteExpense(expense.id);
+                             if (context.mounted) {
+                               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                               content: Text('Expense deleted successfully'),
+                                       duration: Duration(seconds: 2),
+                               ));
+                             }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: theme.cardColor, 
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color: theme.colorScheme.outline.withOpacity(0.15), 
+                              width: 1.2,
                             ),
-                            const SizedBox(width: 16),
-
-                            // Details
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    expense.category,
-                                    style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    _formatDate(expense.date),
-                                    style: TextStyle(
-                                      fontSize: 12, 
-                                      color: theme.brightness == Brightness.dark ? Colors.white60 : const Color(0xFF94A3B8),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(theme.brightness == Brightness.dark ? 0.2 : 0.015),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
-                            ),
-
-                            // Amount Text
-                            Text(
-                              '₹${expense.amount}',
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-
-                            //  Delete Button
-                            Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(30),
-                                onTap: () async {
-                                  final repo = await ref.read(
-                                    expenseRepositoryProvider.future,
-                                  );
-                                  await repo.deleteExpense(expense.id);
-                                  ref.invalidate(expensesProvider);
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: theme.brightness == Brightness.dark
-                                        ? const Color(0xFF451A1A) 
-                                        : const Color(0xFFFEF2F2), 
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Icon(
-                                    Icons.delete_outline_rounded, 
-                                    color: Color(0xFFEF4444), 
-                                    size: 18,
-                                  ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                             
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: theme.brightness == Brightness.dark 
+                                      ? const Color(0xFF334155) 
+                                      : const Color(0xFFF1F5F9),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                  child: Icon(
+                                  _getCategoryIcon(expense.category),
+                                  color: theme.brightness == Brightness.dark 
+                                      ? Colors.white70 
+                                      : const Color(0xFF475569),
+                                  size: 22,
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 16),
+                        
+                              // Details
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      expense.category,
+                                      style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      _formatDate(expense.date),
+                                      style: TextStyle(
+                                        fontSize: 12, 
+                                        color: theme.brightness == Brightness.dark ? Colors.white60 : const Color(0xFF94A3B8),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        
+                              // Amount Text
+                              Text(
+                                '₹${expense.amount}',
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                                     
+                            ],
+                          ),
                         ),
                       );
                     },
