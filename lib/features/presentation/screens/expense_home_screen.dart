@@ -202,7 +202,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                           amount:
                               double.tryParse(_textEditingController2.text) ??
                               0.0,
-                          date: expenseDate,
+                          date: expenseDate ?? DateTime.now(),
                         );
 
                         await repo.addExpense(expense);
