@@ -4,7 +4,7 @@ part 'expense.g.dart';
 
 @collection
 class Expense {
-  Id id = Isar.autoIncrement;
+  Id id ;
 
   @Index() 
   DateTime date;
@@ -16,5 +16,5 @@ class Expense {
   String category = '';
 
   
-  Expense({required this.date, required this.amount ,  this.category = ''});
+  Expense({ this.id = Isar.autoIncrement, required this.date, required this.amount ,  this.category = ''});
 }

@@ -105,8 +105,8 @@ Expense _expenseDeserialize(
     amount: reader.readDouble(offsets[0]),
     category: reader.readStringOrNull(offsets[1]) ?? '',
     date: reader.readDateTime(offsets[2]),
+    id: id,
   );
-  object.id = id;
   return object;
 }
 

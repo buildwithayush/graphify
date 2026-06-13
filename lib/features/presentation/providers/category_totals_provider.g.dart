@@ -6,7 +6,7 @@ part of 'category_totals_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$categoryTotalsHash() => r'18022eee07fc431e1ef58a958742f4ea39875107';
+String _$categoryTotalsHash() => r'1a748e3dbbed076188132ef927d6a13fec2c4675';
 
 /// See also [categoryTotals].
 @ProviderFor(categoryTotals)
