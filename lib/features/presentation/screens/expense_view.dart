@@ -5,7 +5,7 @@ import 'package:graphify/features/data/providers/expense_filter.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
 import 'package:graphify/features/data/providers/filtered_expenses.dart';
 import 'package:graphify/features/data/providers/search_query.dart';
-import 'package:graphify/features/expenses/enums/expense_filter.dart';
+import 'package:graphify/core/constant/expense/enums/expense_filter.dart';
 import 'package:graphify/features/presentation/widgets/edit_expense_sheet.dart';
 
 class ExpenseView extends ConsumerStatefulWidget {

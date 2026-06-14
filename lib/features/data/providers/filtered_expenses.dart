@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:graphify/features/data/providers/expense_filter.dart';
 import 'package:graphify/features/data/providers/search_query.dart';
-import 'package:graphify/features/expenses/enums/expense_filter.dart';
+import 'package:graphify/core/constant/expense/enums/expense_filter.dart';
 import 'package:graphify/features/presentation/providers/expenses.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
