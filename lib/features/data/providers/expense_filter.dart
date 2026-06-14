@@ -1,5 +1,5 @@
 
-import 'package:graphify/features/expenses/enums/expense_filter.dart';
+import 'package:graphify/core/constant/expense/enums/expense_filter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'expense_filter.g.dart';
