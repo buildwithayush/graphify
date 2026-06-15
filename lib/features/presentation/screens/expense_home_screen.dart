@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:graphify/features/data/models/expense.dart';
-import 'package:graphify/features/data/providers/expense_repository_provider.dart';
 import 'package:graphify/features/presentation/providers/category_provider.dart';
+import 'package:graphify/features/presentation/providers/expense_notifier.dart';
 import 'package:graphify/features/presentation/providers/expenses.dart';
 import 'package:graphify/features/presentation/screens/expense_chart_screen.dart';
 import 'package:graphify/features/presentation/screens/expense_view.dart';
@@ -42,7 +41,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-   
+    
    
 
     final categoryState = ref.watch(categoryNotifierProvider);
@@ -190,22 +189,14 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                         ),
                         elevation: 0,
                       ),
-                      onPressed: () async {
-                        final repo = await ref.read(
-                          expenseRepositoryProvider.future,
-                        );
-
-                        final expense = Expense(
-                          category: categoryState.isCustomSelected
-                              ? _textEditingController1.text
-                              : categoryState.selectedcategory,
-                          amount:
-                              double.tryParse(_textEditingController2.text) ??
-                              0.0,
-                          date: expenseDate ?? DateTime.now(),
-                        );
-
-                        await repo.addExpense(expense);
+                      onPressed: ()  {
+                       
+                       final expense = ref.read(expenseNotifierProvider.notifier);
+                          expense.handleAddExpense(category:categoryState. isCustomSelected? 
+                         _textEditingController1.text
+                         :categoryState.selectedcategory, 
+                          amount:  _textEditingController2.text, selectedDate: expenseDate);  
+                      
                         ref.invalidate(expensesProvider);
                         _textEditingController1.clear();
                         _textEditingController2.clear();

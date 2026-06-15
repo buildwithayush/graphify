@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:graphify/features/presentation/charts/expense_pie_charts.dart';
 import 'package:graphify/features/presentation/providers/expenses.dart';
+import 'package:graphify/features/report_analytics/presentation/screens/monthly_history_screen.dart';
 
 class ExpenseChartScreen extends ConsumerStatefulWidget {
   const ExpenseChartScreen({super.key});
@@ -22,7 +23,17 @@ class _ExpenseChartScreenState extends ConsumerState<ExpenseChartScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor, 
       appBar: AppBar(
-        title: Text('Analytics', style: theme.textTheme.titleLarge),
+        title: Row(
+          children: [
+            Text('Analytics', style: theme.textTheme.titleLarge),
+            Spacer(),
+           IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return MonthlyHistoryScreen();
+            }));
+           }, icon: Icon(Icons.more))
+          ],
+        ),
       ),
       body: expenses.isEmpty
           ? Center(

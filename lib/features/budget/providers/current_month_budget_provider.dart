@@ -6,7 +6,7 @@ part 'current_month_budget_provider.g.dart';
 @riverpod
 Stream<Budget?> currentMonthBudget(CurrentMonthBudgetRef ref) async* {
  
-  final budgetService = await ref.watch(budgetProvider.future);
+  final budgetService =  ref.watch(budgetProvider);
   
  
   yield* budgetService.watchCurrentMonthBudget(); 

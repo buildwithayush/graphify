@@ -5,9 +5,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'budget_service_provider.g.dart';
 
 @riverpod
-Future<BudgetService> budget(BudgetRef ref) async {
+BudgetService budget(BudgetRef ref) {
  
-  final isar = await ref.watch(isarProvider.future); 
+  final isar =  ref.watch(isarProvider); 
   
   return BudgetService(isar);
 }

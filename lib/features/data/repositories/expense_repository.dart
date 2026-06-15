@@ -17,6 +17,10 @@ class ExpenseRepository {
        return isar.expenses.where().watch(fireImmediately: true);
   }
 
+  Future<List<Expense>> getAllExpenses() async {
+    return await isar.expenses.where().findAll();
+  }
+
   // Update Expense
   Future<void> updateExpense(Expense expense) async {
     await isar.writeTxn(() async {
