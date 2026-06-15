@@ -7,11 +7,11 @@ part of 'monthy_total_budget.dart';
 // **************************************************************************
 
 String _$monthlyTotalBudgetHash() =>
-    r'5b115f598ef7e1a6be43b48bd42b79b56ad5fec6';
+    r'f9744435d343a75b6cb4a90a16572bdcbe27c8f5';
 
 /// See also [monthlyTotalBudget].
 @ProviderFor(monthlyTotalBudget)
-final monthlyTotalBudgetProvider = AutoDisposeProvider<double>.internal(
+final monthlyTotalBudgetProvider = AutoDisposeProvider<String>.internal(
   monthlyTotalBudget,
   name: r'monthlyTotalBudgetProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final monthlyTotalBudgetProvider = AutoDisposeProvider<double>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef MonthlyTotalBudgetRef = AutoDisposeProviderRef<double>;
+typedef MonthlyTotalBudgetRef = AutoDisposeProviderRef<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

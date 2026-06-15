@@ -46,21 +46,23 @@ class _ExpensesCardScreenState extends ConsumerState<ExpensesCardScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top:8,left: 8,right: 8),
+            padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
             child: BudgetProgressBar(
               monthlyExpense: monthlyExpense,
-              monthlyBudget: monthlyBudget,
+              monthlyBudget: double.tryParse(monthlyBudget) ?? 0,
             ),
           ),
           CustomDashboardCard(
             topTitle: 'Monthly Expenenses',
             mainTitle: 'Expenses',
-            displayAmount: '$monthlyExpense',
+            displayAmount: (monthlyExpense == monthlyExpense.toInt())
+                ? monthlyExpense.toInt().toString()
+                : monthlyExpense.toString(),
           ),
           CustomDashboardCard(
             topTitle: 'Monthly Budget',
             mainTitle: 'Budget',
-            displayAmount: '$monthlyBudget',
+            displayAmount: monthlyBudget,
           ),
         ],
       ),
