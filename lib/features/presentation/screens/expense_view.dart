@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:graphify/features/budget/providers/monthy_total_budget.dart';
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:graphify/features/data/providers/expense_filter.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
@@ -7,6 +8,7 @@ import 'package:graphify/features/data/providers/filtered_expenses.dart';
 import 'package:graphify/features/data/providers/search_query.dart';
 import 'package:graphify/core/constant/expense/enums/expense_filter.dart';
 import 'package:graphify/features/presentation/widgets/edit_expense_sheet.dart';
+import 'package:graphify/features/report_analytics/presentation/providers/report_providers.dart';
 
 class ExpenseView extends ConsumerStatefulWidget {
   const ExpenseView({super.key});
@@ -182,17 +184,48 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                           ),
                         ),
                         onDismissed: (direction) async {
-                          final repo = await ref.watch(
-                            expenseRepositoryProvider.future,
-                          );
-                          await repo.deleteExpense(expense.id);
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Expense deleted successfully'),
-                                duration: Duration(seconds: 2),
-                              ),
+                          try {
+                            final repo = ref.read(expenseRepositoryProvider);
+                            await repo.deleteExpense(expense.id);
+                            Future.delayed(
+                              const Duration(milliseconds: 500),
+                              () async {
+                                try {
+                                  final List<Expense> allExpenses = await repo
+                                      .getAllExpenses();
+                                  final budgetString = ref.read(
+                                    monthlyTotalBudgetProvider,
+                                  );
+                                  final double currentBudget =
+                                      double.tryParse(budgetString) ?? 0.0;
+
+                                  
+                                  await ref
+                                      .read(reportServiceProvider)
+                                      .computeAndSaveReport(
+                                        allExpenses: allExpenses,
+                                        month: expense.date.month,
+                                        year: expense.date.year,
+                                        budget: currentBudget,
+                                      );
+                                
+                                } catch (e) {
+                                 //
+                                }
+                              },
                             );
+
+                            // 3. SnackBar dikhao safely
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Expense deleted successfully'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            debugPrint("Delete failed: $e");
                           }
                         },
                         child: Container(
@@ -287,19 +320,18 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                                     initialDate: expense.date,
                                     initialCategory: expense.category,
                                     initialAmount: expense.amount,
-                                    onEditExpense:
-                                        (date, category, amount) async {
-                                          final expenses = Expense(
-                                          id: expense.id,
-                                            date: date,
-                                            amount: amount,
-                                            category: category,
-                                          );
-                                          final repo = await ref.read(
-                                            expenseRepositoryProvider.future,
-                                          );
-                                          repo.updateExpense(expenses);
-                                        },
+                                    onEditExpense: (date, category, amount) {
+                                      final expenses = Expense(
+                                        id: expense.id,
+                                        date: date,
+                                        amount: amount,
+                                        category: category,
+                                      );
+                                      final repo = ref.read(
+                                        expenseRepositoryProvider,
+                                      );
+                                      repo.updateExpense(expenses);
+                                    },
                                   );
                                 },
                                 icon: Icon(Icons.edit),

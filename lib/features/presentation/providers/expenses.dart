@@ -6,7 +6,7 @@ part 'expenses.g.dart';
 
 @riverpod
 Stream<List<Expense>> expenses(ExpensesRef ref) async* {
-  final repo = await ref.watch(expenseRepositoryProvider.future);
+  final repo = ref.watch(expenseRepositoryProvider);
 
   yield* repo.watchAllExpenses();
 }

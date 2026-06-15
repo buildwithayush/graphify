@@ -26,8 +26,8 @@ class _ExpensesCardScreenState extends ConsumerState<ExpensesCardScreen> {
             Text('Expenses & Budget'),
             Spacer(),
             TextButton(
-              onPressed: () async {
-                final budget = await ref.read(budgetProvider.future);
+              onPressed: () {
+                final budget =  ref.read(budgetProvider);
                 if (!context.mounted) return;
                 showBudgetBottomSheet(context, (amount) async {
                   await budget.setBudget(amount);

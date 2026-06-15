@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'expense_repository_provider.dart';
+part of 'expense_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$expenseRepositoryHash() => r'27fba8f15973605cdc44329c75618569ed88cacc';
+String _$expenseNotifierHash() => r'7f62c70d15b3ae38b67bd97c8ec3010d386b9505';
 
-/// See also [expenseRepository].
-@ProviderFor(expenseRepository)
-final expenseRepositoryProvider =
-    AutoDisposeProvider<ExpenseRepository>.internal(
-  expenseRepository,
-  name: r'expenseRepositoryProvider',
+/// See also [ExpenseNotifier].
+@ProviderFor(ExpenseNotifier)
+final expenseNotifierProvider =
+    AutoDisposeAsyncNotifierProvider<ExpenseNotifier, void>.internal(
+  ExpenseNotifier.new,
+  name: r'expenseNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$expenseRepositoryHash,
+      : _$expenseNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef ExpenseRepositoryRef = AutoDisposeProviderRef<ExpenseRepository>;
+typedef _$ExpenseNotifier = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

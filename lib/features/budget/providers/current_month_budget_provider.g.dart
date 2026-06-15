@@ -7,7 +7,7 @@ part of 'current_month_budget_provider.dart';
 // **************************************************************************
 
 String _$currentMonthBudgetHash() =>
-    r'3e130c13a40a6580709b15c111c2e2035e35dc8b';
+    r'f1c4354b135b4d3f39687a78badfde31c33e6742';
 
 /// See also [currentMonthBudget].
 @ProviderFor(currentMonthBudget)
