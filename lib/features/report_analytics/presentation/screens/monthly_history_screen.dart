@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:graphify/core/utilities/covert_date_format.dart';
+import 'package:graphify/features/presentation/widgets/Tdate_time_picker.dart';
 import 'package:graphify/features/report_analytics/presentation/providers/report_providers.dart';
 
 class MonthlyHistoryScreen extends ConsumerStatefulWidget {
@@ -11,18 +13,14 @@ class MonthlyHistoryScreen extends ConsumerStatefulWidget {
 }
 
 class _MonthlyHistoryScreenState extends ConsumerState<MonthlyHistoryScreen> {
-  // Default selected month-year key
-  String _selectedMonthYear = "2026-06";
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _selectedMonthYear = "${now.year}-${now.month.toString().padLeft(2, '0')}";
+  }
 
-  // Dropdown list options
-  final List<String> _monthOptions = [
-    "2026-06",
-    "2026-05",
-    "2026-04",
-    "2026-03",
-    "2026-02",
-    "2026-01",
-  ];
+  late String _selectedMonthYear;
 
   @override
   Widget build(BuildContext context) {
@@ -68,35 +66,67 @@ class _MonthlyHistoryScreenState extends ConsumerState<MonthlyHistoryScreen> {
                       color: colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _selectedMonthYear,
-                      icon: Icon(
-                        Icons.arrow_drop_down,
-                        color: colorScheme.primary,
+                  // 🚨 STACK ZAROORI HAI: Taaki Positioned sahi se kaam kare aur pure button par click listen ho sake
+                  Stack(
+                    children: [
+                      Container(
+                        height: 48, // Clean standard height
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceVariant.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: colorScheme.outlineVariant.withOpacity(0.6),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize
+                              .min, // Jitni zaroorat ho utni hi width lega
+                          children: [
+                            Icon(
+                              Icons.calendar_month_rounded,
+                              color: colorScheme.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 10),
+
+                            // Selected Month-Year Text
+                            Text(
+                              _selectedMonthYear,
+                              style: TextStyle(
+                                color: colorScheme.onSurface,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+
+                            Icon(
+                              Icons.arrow_drop_down_rounded,
+                              color: colorScheme.onSurfaceVariant,
+                              size: 22,
+                            ),
+                          ],
+                        ),
                       ),
-                      dropdownColor: colorScheme.surface,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.primary,
+
+                      // 🔥 FIXED: Ab yeh Positioned bilkul safe hai kyunki yeh Stack ke andar aa gaya hai
+                      Positioned.fill(
+                        child: Opacity(
+                          opacity: 0.01, // Invisible click target
+                          child: TdateTimePicker(
+                            onDateSelected: (selectedDate) {
+                              final String newRepoKey = convertToRepoKey(
+                                selectedDate,
+                              );
+                              setState(() {
+                                _selectedMonthYear = newRepoKey;
+                              });
+                            },
+                          ),
+                        ),
                       ),
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            _selectedMonthYear = newValue;
-                          });
-                        }
-                      },
-                      items: _monthOptions.map<DropdownMenuItem<String>>((
-                        String value,
-                      ) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
+                    ],
                   ),
                 ],
               ),
