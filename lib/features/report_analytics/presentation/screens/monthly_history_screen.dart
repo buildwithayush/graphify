@@ -66,22 +66,25 @@ class _MonthlyHistoryScreenState extends ConsumerState<MonthlyHistoryScreen> {
                       color: colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
-                  // 🚨 STACK ZAROORI HAI: Taaki Positioned sahi se kaam kare aur pure button par click listen ho sake
+
                   Stack(
                     children: [
                       Container(
-                        height: 48, // Clean standard height
+                        height: 48,
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
-                          color: colorScheme.surfaceVariant.withOpacity(0.4),
+                          color: colorScheme.surfaceContainerHighest.withValues(
+                            alpha: 0.4,
+                          ),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: colorScheme.outlineVariant.withOpacity(0.6),
+                            color: colorScheme.outlineVariant.withValues(
+                              alpha: 0.6,
+                            ),
                           ),
                         ),
                         child: Row(
-                          mainAxisSize: MainAxisSize
-                              .min, // Jitni zaroorat ho utni hi width lega
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               Icons.calendar_month_rounded,
@@ -110,10 +113,9 @@ class _MonthlyHistoryScreenState extends ConsumerState<MonthlyHistoryScreen> {
                         ),
                       ),
 
-                      // 🔥 FIXED: Ab yeh Positioned bilkul safe hai kyunki yeh Stack ke andar aa gaya hai
                       Positioned.fill(
                         child: Opacity(
-                          opacity: 0.01, // Invisible click target
+                          opacity: 0.01,
                           child: TdateTimePicker(
                             onDateSelected: (selectedDate) {
                               final String newRepoKey = convertToRepoKey(
