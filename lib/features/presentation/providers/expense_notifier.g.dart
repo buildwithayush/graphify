@@ -6,7 +6,7 @@ part of 'expense_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$expenseNotifierHash() => r'7f62c70d15b3ae38b67bd97c8ec3010d386b9505';
+String _$expenseNotifierHash() => r'5faddb7b4aa001afeeb1cd7ad47256f9dbfea60d';
 
 /// See also [ExpenseNotifier].
 @ProviderFor(ExpenseNotifier)

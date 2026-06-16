@@ -6,6 +6,7 @@ import 'package:graphify/features/presentation/widgets/bottom_sheet.dart';
 import 'package:graphify/features/presentation/providers/monthlyTotal.dart';
 import 'package:graphify/features/presentation/widgets/budget_progress_bar.dart';
 import 'package:graphify/features/presentation/widgets/monthy_expense_card.dart';
+import 'package:graphify/features/report_analytics/presentation/providers/report_providers.dart';
 
 class ExpensesCardScreen extends ConsumerStatefulWidget {
   const ExpensesCardScreen({super.key});
@@ -27,10 +28,24 @@ class _ExpensesCardScreenState extends ConsumerState<ExpensesCardScreen> {
             Spacer(),
             TextButton(
               onPressed: () {
-                final budget =  ref.read(budgetProvider);
+                final budget = ref.read(budgetProvider);
                 if (!context.mounted) return;
+
                 showBudgetBottomSheet(context, (amount) async {
                   await budget.setBudget(amount);
+
+                  try {
+                    final DateTime currentDate = DateTime.now();
+
+                    final reportRepo = ref.read(reportRepositoryProvider);
+                    await reportRepo.updateJustMonthlyBudget(
+                      month: currentDate.month,
+                      year: currentDate.year,
+                      newBudget: amount,
+                    );
+                  } catch (e) {
+                    debugPrint('Error updating budget in report repo: $e');
+                  }
                   if (!context.mounted) return;
 
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -38,7 +53,7 @@ class _ExpensesCardScreenState extends ConsumerState<ExpensesCardScreen> {
                   );
                 });
               },
-              child: Icon(Icons.edit, size: 21),
+              child: const Icon(Icons.edit, size: 21),
             ),
           ],
         ),

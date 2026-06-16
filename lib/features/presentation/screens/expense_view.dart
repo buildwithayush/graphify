@@ -186,36 +186,15 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                         onDismissed: (direction) async {
                           try {
                             final repo = ref.read(expenseRepositoryProvider);
-                            await repo.deleteExpense(expense.id);
-                            Future.delayed(
-                              const Duration(milliseconds: 500),
-                              () async {
-                                try {
-                                  final List<Expense> allExpenses = await repo
-                                      .getAllExpenses();
-                                  final budgetString = ref.read(
-                                    monthlyTotalBudgetProvider,
-                                  );
-                                  final double currentBudget =
-                                      double.tryParse(budgetString) ?? 0.0;
-
-                                  
-                                  await ref
-                                      .read(reportServiceProvider)
-                                      .computeAndSaveReport(
-                                        allExpenses: allExpenses,
-                                        month: expense.date.month,
-                                        year: expense.date.year,
-                                        budget: currentBudget,
-                                      );
-                                
-                                } catch (e) {
-                                 //
-                                }
-                              },
+                            repo.deleteExpense(expense.id);
+                            final reportService = ref.read(
+                              reportServiceProvider,
                             );
-
-                            // 3. SnackBar dikhao safely
+                            await repo.expenseSyncReport(
+                              id: expense.id,
+                              date: expense.date,
+                              reportService: reportService,
+                            );
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -225,7 +204,7 @@ class _ExpenseViewState extends ConsumerState<ExpenseView> {
                               );
                             }
                           } catch (e) {
-                            debugPrint("Delete failed: $e");
+                            // Delete Error
                           }
                         },
                         child: Container(
