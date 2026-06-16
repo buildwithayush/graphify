@@ -11,8 +11,9 @@ class ReportService {
     required List<Expense> allExpenses,
     required int month,
     required int year,
-    required double budget,
+     double? budget,
   }) async {
+    
     double totalExpense = 0.0;
     final Map<String, dynamic> categoryMap = {};
 
@@ -26,10 +27,11 @@ class ReportService {
           (categoryMap[expense.category] ?? 0.0) + expense.amount;
     }
     final String monthYearKey = "$year-${month.toString().padLeft(2, '0')}";
-
+    final existingReport = await _reportRepository.fetchReportsByMonths(monthYearKey);
+    final double finalBudget = budget ?? existingReport?.totalBudget ?? 0.0;
     final report = MonthlyReport()
       ..monthYear = monthYearKey
-      ..totalBudget = budget
+      ..totalBudget = finalBudget
       ..totalExpense = totalExpense
       ..categoryBreakdown = categoryMap;
 

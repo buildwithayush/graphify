@@ -1,4 +1,5 @@
 import 'package:graphify/features/data/models/expense.dart';
+import 'package:graphify/features/report_analytics/data/services/report_service.dart';
 import 'package:isar/isar.dart';
 
 class ExpenseRepository {
@@ -32,6 +33,28 @@ class ExpenseRepository {
   Future<void> deleteExpense(int id) async {
     await isar.writeTxn(() async {
       await isar.expenses.delete(id);
+    });
+  }
+
+  Future<void> expenseSyncReport({
+    required int id,
+    required DateTime date,
+    required ReportService reportService,
+  }) async {
+    
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      try {
+        final allExpenses = await isar.expenses.where().findAll();
+        await reportService.computeAndSaveReport(
+          allExpenses: allExpenses,
+          month: date.month,
+          year: date.year,
+         
+        );
+        
+      } catch (e) {
+   //
+      }
     });
   }
 }

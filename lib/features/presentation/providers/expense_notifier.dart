@@ -1,5 +1,6 @@
 import 'package:graphify/features/data/models/expense.dart';
 import 'package:graphify/features/data/providers/expense_repository_provider.dart';
+import 'package:graphify/features/report_analytics/presentation/providers/report_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'expense_notifier.g.dart';
@@ -26,8 +27,13 @@ class ExpenseNotifier extends _$ExpenseNotifier {
         category: category,
       );
       final repo = ref.watch(expenseRepositoryProvider);
-      repo.addExpense(expense);
-    
+      final reportService = ref.watch(reportServiceProvider);
+      await repo.addExpense(expense);
+      await repo.expenseSyncReport(
+        id: expense.id,
+        date: finalDate,
+        reportService: reportService,
+      );
     } catch (e) {
       //
     }

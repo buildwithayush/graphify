@@ -8,7 +8,7 @@ class ReportRepository {
 
   Future<void> saveReport(MonthlyReport report) async {
     await _isar.writeTxn(() async {
-      await _isar.monthlyReports.put(report);
+      await _isar.monthlyReports.putByMonthYear(report);
     });
   }
 
@@ -32,5 +32,34 @@ class ReportRepository {
         .filter()
         .monthYearStartsWith(year)
         .findAll();
+  }
+
+  Future<void> updateJustMonthlyBudget({
+    required int month,
+    required int year,
+    required double newBudget,
+  }) async {
+    final String monthYearKey = "$year-${month.toString().padLeft(2, '0')}";
+
+    await _isar.writeTxn(() async {
+      final MonthlyReport? existingReport = await _isar.monthlyReports
+          .filter()
+          .monthYearEqualTo(monthYearKey)
+          .findFirst();
+
+      if (existingReport == null) {
+        final newReport = MonthlyReport();
+        newReport.monthYear = monthYearKey;
+        newReport.totalExpense = 0.0;
+        newReport.totalBudget = newBudget;
+        newReport.categoryBreakdown = {};
+
+        await _isar.monthlyReports.put(newReport);
+      } else {
+        existingReport.totalBudget = newBudget;
+
+        await _isar.monthlyReports.put(existingReport);
+      }
+    });
   }
 }
