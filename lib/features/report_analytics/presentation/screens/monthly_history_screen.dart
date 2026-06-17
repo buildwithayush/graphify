@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphify/core/utilities/covert_date_format.dart';
 import 'package:graphify/features/presentation/widgets/Tdate_time_picker.dart';
 import 'package:graphify/features/report_analytics/presentation/providers/report_providers.dart';
+import 'package:intl/intl.dart';
 
 class MonthlyHistoryScreen extends ConsumerStatefulWidget {
   const MonthlyHistoryScreen({super.key});
@@ -31,6 +32,7 @@ class _MonthlyHistoryScreenState extends ConsumerState<MonthlyHistoryScreen> {
     // 2. Theme setup (Dark/Light )
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final String monthName = getMonthName(_selectedMonthYear);
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -59,14 +61,14 @@ class _MonthlyHistoryScreenState extends ConsumerState<MonthlyHistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Select Month:",
+                    "Selected Month:  $monthName",
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 17,
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
-
+                    
                   Stack(
                     children: [
                       Container(
@@ -305,4 +307,9 @@ class _MonthlyHistoryScreenState extends ConsumerState<MonthlyHistoryScreen> {
       ),
     );
   }
+}
+
+String getMonthName(String monthYear){
+  final  date = DateFormat('yyyy-MM').parse(monthYear);
+  return DateFormat('MMMM').format(date);
 }
