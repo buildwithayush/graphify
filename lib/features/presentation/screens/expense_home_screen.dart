@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphify/features/presentation/providers/category_provider.dart';
 import 'package:graphify/features/presentation/providers/expense_notifier.dart';
 import 'package:graphify/features/presentation/providers/expenses.dart';
-import 'package:graphify/features/presentation/screens/expense_chart_screen.dart';
+import 'package:graphify/features/report_analytics/presentation/screens/expense_chart_screen.dart';
 import 'package:graphify/features/presentation/screens/expense_view.dart';
 import 'package:graphify/features/presentation/screens/expenses_card_screen.dart';
 import 'package:graphify/features/presentation/widgets/Tdate_time_picker.dart';
+import 'package:graphify/features/report_analytics/presentation/screens/report_analytics_screen.dart';
 import 'package:graphify/features/settings/presentation/screens/settings_screen.dart';
 
 class ExpenseHomeScreen extends ConsumerStatefulWidget {
@@ -41,22 +42,17 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
-   
-
     final categoryState = ref.watch(categoryNotifierProvider);
     final theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-    
         title: Text('Graphify', style: theme.textTheme.titleLarge),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-            
               icon: const Icon(Icons.settings),
               onPressed: () => Navigator.push(
                 context,
@@ -78,16 +74,17 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
             Container(
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-               
                 color: theme.cardColor,
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: theme.colorScheme.outline.withOpacity(0.15), 
+                  color: theme.colorScheme.outline.withOpacity(0.15),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(theme.brightness == Brightness.dark ? 0.25 : 0.02),
+                    color: Colors.black.withOpacity(
+                      theme.brightness == Brightness.dark ? 0.25 : 0.02,
+                    ),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -108,7 +105,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   Text('Category', style: theme.textTheme.bodyMedium),
                   const SizedBox(height: 8),
 
-                  // Dropdown Container Wrapper 
+                  // Dropdown Container Wrapper
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -118,8 +115,8 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                       color: theme.inputDecorationTheme.fillColor,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: theme.brightness == Brightness.dark 
-                            ? const Color(0xFF334155) 
+                        color: theme.brightness == Brightness.dark
+                            ? const Color(0xFF334155)
                             : const Color(0xFFE5E7EB),
                       ),
                     ),
@@ -127,11 +124,11 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                       child: DropdownButton<String>(
                         value: categoryState.selectedcategory,
                         isExpanded: true,
-                        dropdownColor: theme.cardColor, 
+                        dropdownColor: theme.cardColor,
                         icon: Icon(
                           Icons.keyboard_arrow_down,
-                          color: theme.brightness == Brightness.dark 
-                              ? Colors.white70 
+                          color: theme.brightness == Brightness.dark
+                              ? Colors.white70
                               : const Color(0xFF4B5563),
                         ),
                         items: categories.map((String item) {
@@ -142,7 +139,9 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                         }).toList(),
                         onChanged: (newValue) {
                           if (newValue != null) {
-                            ref.read(categoryNotifierProvider.notifier).updateCategory(newValue);
+                            ref
+                                .read(categoryNotifierProvider.notifier)
+                                .updateCategory(newValue);
                           }
                         },
                       ),
@@ -153,7 +152,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     const SizedBox(height: 16),
                     TextField(
                       controller: _textEditingController1,
-                      
+
                       decoration: const InputDecoration(
                         hintText: 'Enter Custom Category',
                       ),
@@ -168,7 +167,10 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _textEditingController2,
-                    style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                     decoration: const InputDecoration(
                       hintText: '0.00',
                       prefixIcon: Icon(Icons.currency_rupee, size: 18),
@@ -182,21 +184,29 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                     height: 52,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.brightness == Brightness.dark ? Colors.black : Colors.blueGrey, 
-                        foregroundColor: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
+                        backgroundColor: theme.brightness == Brightness.dark
+                            ? Colors.black
+                            : Colors.blueGrey,
+                        foregroundColor: theme.brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
                         elevation: 0,
                       ),
-                      onPressed: ()  {
-                       
-                       final expense = ref.read(expenseNotifierProvider.notifier);
-                          expense.handleAddExpense(category:categoryState. isCustomSelected? 
-                         _textEditingController1.text
-                         :categoryState.selectedcategory, 
-                          amount:  _textEditingController2.text, selectedDate: expenseDate);  
-                      
+                      onPressed: () {
+                        final expense = ref.read(
+                          expenseNotifierProvider.notifier,
+                        );
+                        expense.handleAddExpense(
+                          category: categoryState.isCustomSelected
+                              ? _textEditingController1.text
+                              : categoryState.selectedcategory,
+                          amount: _textEditingController2.text,
+                          selectedDate: expenseDate,
+                        );
+
                         ref.invalidate(expensesProvider);
                         _textEditingController1.clear();
                         _textEditingController2.clear();
@@ -209,12 +219,12 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              backgroundColor: const Color(0xFF10B981), 
+                              backgroundColor: const Color(0xFF10B981),
                             ),
                           );
                         }
                       },
-                      child:  Text(
+                      child: Text(
                         'Add Expense',
                         style: TextStyle(
                           fontSize: 16,
@@ -229,41 +239,82 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
             const SizedBox(height: 24),
           ],
         ),
-        
       ),
-    bottomNavigationBar: BottomAppBar(
-    
-      child: Row(
-        children: [
-          IconButton(onPressed: (){
-               Navigator.push(context, MaterialPageRoute(builder: (context){
-                return ExpenseHomeScreen();
-               }));
-          }, icon: Icon(Icons.home)),
-          Spacer(),
-          IconButton(onPressed: (){
-             Navigator.push(context, MaterialPageRoute(builder: (context){
-                return ExpenseView();
-               }));
-          }, icon: Icon(Icons.list_alt)),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ExpenseHomeScreen();
+                    },
+                  ),
+                );
+              },
+              icon: Icon(Icons.home),
+            ),
             Spacer(),
-          IconButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context){
-              return ExpensesCardScreen();
-            }));
-          }, icon: Icon(Icons.currency_rupee)),
-              Spacer(),
-          IconButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context){
-                return ExpenseChartScreen();
-               }));
-          }, icon: Icon(Icons.add_chart)),
-           
-
-        ],
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ExpenseView();
+                    },
+                  ),
+                );
+              },
+              icon: Icon(Icons.list_alt),
+            ),
+            Spacer(),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ExpensesCardScreen();
+                    },
+                  ),
+                );
+              },
+              icon: Icon(Icons.currency_rupee),
+            ),
+            Spacer(),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ReportAnalyticsScreen();
+                    },
+                  ),
+                );
+              },
+              icon: Icon(Icons.analytics),
+            ),
+            Spacer(),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ExpenseChartScreen();
+                    },
+                  ),
+                );
+              },
+              icon: Icon(Icons.add_chart),
+            ),
+          ],
+        ),
       ),
-
-    )
     );
   }
 }
