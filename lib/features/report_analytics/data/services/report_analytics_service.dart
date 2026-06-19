@@ -42,7 +42,7 @@ class ReportAnalyticsService {
     }
 
     for (var e in previousExpense) {
-      previousMap[e.category] = (currentMap[e.category] ?? 0.0) + e.amount;
+      previousMap[e.category] = (previousMap[e.category] ?? 0.0) + e.amount;
       previousTotal += e.amount;
     }
 
