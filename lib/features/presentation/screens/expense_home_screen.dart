@@ -3,12 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphify/features/presentation/providers/category_provider.dart';
 import 'package:graphify/features/presentation/providers/expense_notifier.dart';
 import 'package:graphify/features/presentation/providers/expenses.dart';
+import 'package:graphify/features/receipt_scanner/domain/models/parsed_recipt.dart';
+import 'package:graphify/features/receipt_scanner/presentation/providers/receipt_scanner_provider.dart';
+import 'package:graphify/features/receipt_scanner/presentation/widgets/receipt_review_dialog.dart';
 import 'package:graphify/features/report_analytics/presentation/screens/expense_chart_screen.dart';
 import 'package:graphify/features/presentation/screens/expense_view.dart';
 import 'package:graphify/features/presentation/screens/expenses_card_screen.dart';
 import 'package:graphify/features/presentation/widgets/Tdate_time_picker.dart';
 import 'package:graphify/features/report_analytics/presentation/screens/report_analytics_screen.dart';
 import 'package:graphify/features/settings/presentation/screens/settings_screen.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ExpenseHomeScreen extends ConsumerStatefulWidget {
   const ExpenseHomeScreen({super.key});
@@ -42,6 +46,35 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<ParsedReceipt?>>(receiptScannerControllerProvider, (
+      prev,
+      next,
+    ) {
+      next.when(
+        data: (parsedReceipt) {
+          if (parsedReceipt != null) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (dialogContext) =>
+                  ReceiptReviewDialog(parsedData: parsedReceipt),
+            );
+          }
+        },
+        error: (err, stack) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '⚠️ Processing Error: ${err.toString().replaceAll('Exception: ', '')}',
+              ),
+              backgroundColor: Theme.of(context).colorScheme.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        },
+        loading: () {},
+      );
+    });
     final categoryState = ref.watch(categoryNotifierProvider);
     final theme = Theme.of(context);
 
@@ -77,13 +110,13 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                 color: theme.cardColor,
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: theme.colorScheme.outline.withOpacity(0.15),
+                  color: theme.colorScheme.outline.withValues(alpha: 0.15),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(
-                      theme.brightness == Brightness.dark ? 0.25 : 0.02,
+                    color: Colors.black.withValues(
+                      alpha: theme.brightness == Brightness.dark ? 0.25 : 0.02,
                     ),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
@@ -237,6 +270,61 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
               ),
             ),
             const SizedBox(height: 24),
+
+            //  SCAN BILL ELEVATED BUTTON
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.blueGrey,
+                    foregroundColor: theme.brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 0,
+                  ),
+
+                  onPressed:
+                      ref.watch(receiptScannerControllerProvider).isLoading
+                      ? null
+                      : () {
+                          _showSourceSelectorSheet(context, ref);
+                        },
+                  child: ref.watch(receiptScannerControllerProvider).isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        )
+                      : const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.qr_code_scanner_rounded, size: 20),
+                            SizedBox(width: 10),
+                            Text(
+                              'Scan Receipt with OCR',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -315,6 +403,94 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showSourceSelectorSheet(BuildContext parentContext, WidgetRef ref) {
+    showModalBottomSheet(
+      context: parentContext,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        final colorScheme = Theme.of(sheetContext).colorScheme;
+
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const Text(
+                  "Select Receipt Source",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
+
+                // LIVE CAMERA PHOTO
+                ListTile(
+                  leading: Icon(
+                    Icons.camera_alt_rounded,
+                    color: colorScheme.primary,
+                  ),
+                  title: const Text(
+                    "Take Live Photo (Camera)",
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  onTap: () async {
+                    Navigator.pop(sheetContext);
+
+                    // SAFE MOUNTED CHECK
+                    if (!parentContext.mounted) return;
+
+                    await ref
+                        .read(receiptScannerControllerProvider.notifier)
+                        .scanReceipt(
+                          source: ImageSource.camera,
+                          context: parentContext,
+                        );
+                  },
+                ),
+
+                //  CHOOSE FROM GALLERY
+                ListTile(
+                  leading: Icon(
+                    Icons.image_rounded,
+                    color: colorScheme.primary,
+                  ),
+                  title: const Text(
+                    "Choose from Gallery",
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  onTap: () async {
+                    Navigator.pop(sheetContext);
+
+                    // Safe layout check
+                    if (!parentContext.mounted) return;
+
+                    // 3. Gallery
+                    await ref
+                        .read(receiptScannerControllerProvider.notifier)
+                        .scanReceipt(
+                          source: ImageSource.gallery,
+                          context: parentContext,
+                        );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

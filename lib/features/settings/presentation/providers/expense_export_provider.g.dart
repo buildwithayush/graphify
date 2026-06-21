@@ -22,12 +22,12 @@ final csvExportServiceProvider = AutoDisposeProvider<CsvExportService>.internal(
 
 typedef CsvExportServiceRef = AutoDisposeProviderRef<CsvExportService>;
 String _$expenseExportControllerHash() =>
-    r'13e5f30909d7ee777b3098679e0c9ad086cc5f07';
+    r'702123461e9a20a9ba5f06318c539ace7c6de7c9';
 
 /// See also [ExpenseExportController].
 @ProviderFor(ExpenseExportController)
 final expenseExportControllerProvider =
-    AutoDisposeAsyncNotifierProvider<ExpenseExportController, void>.internal(
+    AutoDisposeNotifierProvider<ExpenseExportController, void>.internal(
   ExpenseExportController.new,
   name: r'expenseExportControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -37,6 +37,6 @@ final expenseExportControllerProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$ExpenseExportController = AutoDisposeAsyncNotifier<void>;
+typedef _$ExpenseExportController = AutoDisposeNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
