@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:graphify/features/data/models/expense.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -14,10 +15,10 @@ class CsvExportService {
       }
 
       final List<String> csvRows = [];
-      csvRows.add("Date,Category,Title,Amount,Note");
+      csvRows.add("Date,Category,Amount");
 
       for (var expense in expenses) {
-        final String formattedDate = expense.date.toString().split(' ')[0];
+        final String formattedDate = DateFormat('yyyy-MM-dd').format(expense.date);
 
         final String row =
             '$formattedDate,${expense.category},${expense.amount}';
