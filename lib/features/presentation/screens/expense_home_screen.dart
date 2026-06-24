@@ -6,6 +6,9 @@ import 'package:graphify/features/presentation/providers/expenses.dart';
 import 'package:graphify/features/receipt_scanner/domain/models/parsed_recipt.dart';
 import 'package:graphify/features/receipt_scanner/presentation/providers/receipt_scanner_provider.dart';
 import 'package:graphify/features/receipt_scanner/presentation/widgets/receipt_review_dialog.dart';
+import 'package:graphify/features/recurring_expenses/presentation/providers/recurring_provider.dart';
+import 'package:graphify/features/recurring_expenses/presentation/widgets/recurring_tick_box.dart';
+import 'package:graphify/features/recurring_expenses/presentation/widgets/short_month_validator.dart';
 import 'package:graphify/features/report_analytics/presentation/screens/expense_chart_screen.dart';
 import 'package:graphify/features/presentation/screens/expense_view.dart';
 import 'package:graphify/features/presentation/screens/expenses_card_screen.dart';
@@ -31,18 +34,19 @@ List<String> categories = [
 ];
 
 class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
-  final TextEditingController _textEditingController1 = TextEditingController();
-  final TextEditingController _textEditingController2 = TextEditingController();
+  final TextEditingController categoryController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
 
   @override
   void dispose() {
-    _textEditingController1.dispose();
-    _textEditingController2.dispose();
+    categoryController.dispose();
+    amountController.dispose();
     super.dispose();
   }
 
   DateTime? expenseDate;
   bool isCustomSelected = false;
+  bool isTickChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +188,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   if (categoryState.isCustomSelected) ...[
                     const SizedBox(height: 16),
                     TextField(
-                      controller: _textEditingController1,
+                      controller: categoryController,
 
                       decoration: const InputDecoration(
                         hintText: 'Enter Custom Category',
@@ -199,7 +203,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   // Amount TextField
                   TextFormField(
                     keyboardType: TextInputType.number,
-                    controller: _textEditingController2,
+                    controller: amountController,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -228,43 +232,101 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                         ),
                         elevation: 0,
                       ),
-                      onPressed: () {
-                        final expense = ref.read(
+                      onPressed: () async {
+                        final String finalCategory =
+                            categoryState.isCustomSelected
+                            ? categoryController.text.trim()
+                            : categoryState.selectedcategory;
+
+                        final double finalAmount =
+                            double.tryParse(amountController.text) ?? 0.0;
+
+                        //  CORE SYSTEM DIRECTION CONTROLLER
+                        if (isTickChecked) {
+                          ref
+                              .read(recurringControllerProvider.notifier)
+                              .registerRecurringExpenses(
+                                category: finalCategory,
+                                amount: finalAmount,
+                                recurringDay:
+                                    expenseDate?.day ?? DateTime.now().day,
+
+                                selectedDate: expenseDate ?? DateTime.now(),
+                              );
+
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "🔄 Monthly automation active for $finalCategory!",
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                                backgroundColor: const Color(0xFF3B82F6),
+                              ),
+                            );
+                          }
+                        }
+
+                        final expenseNotifier = ref.read(
                           expenseNotifierProvider.notifier,
                         );
-                        expense.handleAddExpense(
+                        await expenseNotifier.handleAddExpense(
                           category: categoryState.isCustomSelected
-                              ? _textEditingController1.text
+                              ? categoryController.text
                               : categoryState.selectedcategory,
-                          amount: _textEditingController2.text,
+                          amount: amountController.text,
                           selectedDate: expenseDate,
                         );
-
                         ref.invalidate(expensesProvider);
-                        _textEditingController1.clear();
-                        _textEditingController2.clear();
 
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Expense added successfully'),
+                            const SnackBar(
+                              content: Text("💸 Expense logged successfully!"),
                               behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              backgroundColor: const Color(0xFF10B981),
                             ),
                           );
+                          // FORM RESET PIPELINE
+                          setState(() {
+                            amountController.clear();
+                            categoryController.clear();
+                            isTickChecked = false;
+                          });
                         }
                       },
-                      child: Text(
-                        'Add Expense',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Add Expense',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              RecurringTickBox(
+                                value: isTickChecked,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isTickChecked = value ?? false;
+                                  });
+                                },
+                                selectedDate: expenseDate ?? DateTime.now(),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
+                  ),
+                  SizedBox(height: 4),
+                  ShortMonthValidator(
+                    value: isTickChecked,
+                    selectedDate: expenseDate ?? DateTime.now(),
                   ),
                 ],
               ),

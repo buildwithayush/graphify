@@ -22,7 +22,7 @@ final ocrParserServiceProvider = Provider<OcrParserService>.internal(
 
 typedef OcrParserServiceRef = ProviderRef<OcrParserService>;
 String _$receiptScannerControllerHash() =>
-    r'e8950cd3257a2a44e5793fbf025445772cadbc8c';
+    r'9c0dc4a0b6c7ffcb095ddc435d5de4f7ebbaedc7';
 
 /// See also [ReceiptScannerController].
 @ProviderFor(ReceiptScannerController)
