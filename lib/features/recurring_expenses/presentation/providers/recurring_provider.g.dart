@@ -7,7 +7,7 @@ part of 'recurring_provider.dart';
 // **************************************************************************
 
 String _$recurringControllerHash() =>
-    r'a5736a75849705421dedd68ed25214d90ba1734f';
+    r'cb0bdbf1ed34ed16fdc924355f50f565bc0cc781';
 
 /// See also [RecurringController].
 @ProviderFor(RecurringController)

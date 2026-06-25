@@ -21,8 +21,7 @@ class NotificationService {
     try {
       tz.setLocalLocation(tz.getLocation('Asia/Kolkata'));
     } catch (e) {
-      // Timezone initialization is safe to fail here because
-      // the system defaults to the main initialization backup.
+      throw Exception('Localization Error');
     }
 
     const AndroidInitializationSettings androidInitializationSettings =
@@ -44,7 +43,7 @@ class NotificationService {
 
     await _notificationsPlugin.initialize(
       settings: settings,
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         if (response.payload != null) {
           _handleNotificationClick(response.payload!);
@@ -105,101 +104,25 @@ class NotificationService {
     return scheduledDate;
   }
 
-  Future<void> scheduleRecurringNotification({
+  Future<void> showInstantRecurringNotification({
     required int id,
     required String category,
     required double amount,
-    required int targetDay,
   }) async {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    // tz.TZDateTime scheduleDate = tz.TZDateTime(
-    //   tz.local,
-    //   now.year,
-    //   now.year,
-    //   targetDay,
-    //   10,
-    //   0,
-    // );
-    final tz.TZDateTime scheduledDate = tz.TZDateTime.now(
-      tz.local,
-    ).add(const Duration(minutes: 2));
-    // if (scheduledDate.isBefore(now)) {
-    //   scheduledDate = tz.TZDateTime(
-    //     tz.local,
-    //     now.year,
-    //     now.month + 1,
-    //     targetDay,
-    //     10,
-    //     0,
-    //   );
-    // }
     final String payloadData = "$category|$amount";
-    debugPrint("🚨 SENDING PAYLOAD: $payloadData");
-    await _notificationsPlugin.zonedSchedule(
+    await _notificationsPlugin.show(
       id: id,
-      title: '🔄 Auto Expense Logged!',
-      body: '₹$amount has been automatically added to your $category category.',
-      scheduledDate: scheduledDate,
+      title: '💸 Auto Expense Logged!',
+      body: '₹$amount has been automatically added for $category.',
       notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           'recurring_channel_id',
           'Recurring Expenses Alerts',
-          channelDescription:
-              'Notifications for automated fixed monthly expenses',
           importance: Importance.max,
           priority: Priority.high,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.dayOfMonthAndTime,
       payload: payloadData,
     );
-  }
-
-  Future<void> cancelAlarm(int id) async {
-    await _notificationsPlugin.cancel(id: id);
-  }
-}
-
-@pragma('vm:entry-point')
-void notificationTapBackground(
-  NotificationResponse notificationResponse,
-) async {
-  WidgetsFlutterBinding.ensureInitialized();
-  debugPrint("🚨 BACKGROUND TRIGGERED VIA OS ALARM!");
-
-  final String? payload = notificationResponse.payload;
-
-  if (payload != null && payload.isNotEmpty) {
-    final List<String> dataParts = payload.split('|');
-    final String category = dataParts[0];
-    final String amountString = dataParts[1];
-    final double amount = double.tryParse(amountString) ?? 0.0;
-
-    try {
-      Isar? isar = Isar.getInstance();
-
-      if (isar == null) {
-        final dir = await getApplicationDocumentsDirectory();
-
-        isar = await Isar.open([
-          ExpenseSchema,
-          BudgetSchema,
-          MonthlyReportSchema,
-        ], directory: dir.path);
-      }
-
-      final newAutoExpense = Expense(
-        category: category,
-        amount: amount,
-        date: DateTime.now(),
-      );
-
-      await isar.writeTxn(() async {
-        await isar!.expenses.put(newAutoExpense);
-      });
-    } catch (e) {
-      // Isolate background channel failsafe
-    }
   }
 }

@@ -6,6 +6,7 @@ import 'package:graphify/features/presentation/providers/expenses.dart';
 import 'package:graphify/features/receipt_scanner/domain/models/parsed_recipt.dart';
 import 'package:graphify/features/receipt_scanner/presentation/providers/receipt_scanner_provider.dart';
 import 'package:graphify/features/receipt_scanner/presentation/widgets/receipt_review_dialog.dart';
+import 'package:graphify/features/recurring_expenses/domain/models/recurring_model.dart';
 import 'package:graphify/features/recurring_expenses/presentation/providers/recurring_provider.dart';
 import 'package:graphify/features/recurring_expenses/presentation/widgets/recurring_tick_box.dart';
 import 'package:graphify/features/recurring_expenses/presentation/widgets/short_month_validator.dart';
@@ -38,13 +39,22 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
   final TextEditingController amountController = TextEditingController();
 
   @override
+void initState() {
+  super.initState();
+  
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    ref.read(recurringControllerProvider.notifier).checkAndLogPendingRecurringExpenses();
+  });
+}
+
+  @override
   void dispose() {
     categoryController.dispose();
     amountController.dispose();
     super.dispose();
   }
 
-  DateTime? expenseDate;
+  DateTime expenseDate = DateTime.now();
   bool isCustomSelected = false;
   bool isTickChecked = false;
 
@@ -243,16 +253,23 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
 
                         //  CORE SYSTEM DIRECTION CONTROLLER
                         if (isTickChecked) {
-                          ref
-                              .read(recurringControllerProvider.notifier)
-                              .registerRecurringExpenses(
-                                category: finalCategory,
-                                amount: finalAmount,
-                                recurringDay:
-                                    expenseDate?.day ?? DateTime.now().day,
+                          final int safeRecurringDay = expenseDate.day > 28
+                              ? 28
+                              : expenseDate.day;
+                          final newRule = RecurringModel(
+                            category: finalCategory,
+                            amount: finalAmount,
+                            recurringDay: safeRecurringDay,
 
-                                selectedDate: expenseDate ?? DateTime.now(),
-                              );
+                            lastLoggedDate: DateTime(
+                              expenseDate.year,
+                              expenseDate.month,
+                              safeRecurringDay,
+                            ),
+                          );
+                          await ref
+                              .read(recurringControllerProvider.notifier)
+                              .addRecurringRule(newRule);
 
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -261,7 +278,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                                   "🔄 Monthly automation active for $finalCategory!",
                                 ),
                                 behavior: SnackBarBehavior.floating,
-                                backgroundColor: const Color(0xFF3B82F6),
+                                backgroundColor: const Color.fromARGB(255, 117, 169, 253),
                               ),
                             );
                           }
@@ -286,7 +303,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
-                          // FORM RESET PIPELINE
+                          // FORM RESET 
                           setState(() {
                             amountController.clear();
                             categoryController.clear();
@@ -315,7 +332,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                                     isTickChecked = value ?? false;
                                   });
                                 },
-                                selectedDate: expenseDate ?? DateTime.now(),
+                                selectedDate: expenseDate,
                               ),
                             ],
                           ),
@@ -326,7 +343,7 @@ class _ExpenseHomeScreenState extends ConsumerState<ExpenseHomeScreen> {
                   SizedBox(height: 4),
                   ShortMonthValidator(
                     value: isTickChecked,
-                    selectedDate: expenseDate ?? DateTime.now(),
+                    selectedDate: expenseDate,
                   ),
                 ],
               ),
